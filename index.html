@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠園生活標籤列印系統</title>
+    <style>
+        :root {
+            /* 定義標籤尺寸 */
+            --label-width: 87.5mm;
+            --label-height: 60.7mm;
+            --sidebar-width: 350px;
+            /* 調整：內容區總寬度限制，確保右側留有邊距 */
+            --max-content-width: calc(87.5mm - 16mm); 
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        /* 左側控制面板 */
+        #sidebar {
+            width: var(--sidebar-width);
+            padding: 25px;
+            background: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            height: 100vh;
+            box-sizing: border-box;
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        /* 簡化後的日期顯示樣式 */
+        .date-display-text {
+            display: block;
+            margin-top: 5px;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 5px 0;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        /* 右側預覽區 */
+        #preview-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            overflow: auto;
+            background-color: #d1d8e0;
+        }
+
+        #label-container {
+            transform: scale(1.5);
+            transform-origin: center center;
+            display: inline-block;
+        }
+
+        .label-page {
+            width: var(--label-width);
+            height: var(--label-height);
+            background: white;
+            border: 1px dashed #adb5bd;
+            position: relative;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .field {
+            position: absolute;
+            font-size: 11pt;
+            color: #000;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* 品項名稱容器 */
+        #displayNameContainer {
+            left: 4.8mm;
+            top: 30mm;
+            width: var(--max-content-width);
+            height: 12mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #displayName {
+            font-weight: bold;
+            font-size: 24pt;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        #displayCount {
+            font-weight: bold;
+            font-size: 13pt;
+        }
+
+        #displayDate {
+            font-weight: bold;
+        }
+
+        /* 太陽日外框 */
+        #solarDay {
+            font-size: 18pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 2px solid #000;
+            padding: 1mm 2mm;
+            min-width: 12mm;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 贈品框樣式 */
+        #giftBox {
+            font-size: 16pt;
+            font-weight: bold;
+            border: 2px solid #000;
+            padding: 1mm 3mm;
+            display: none; /* 預設隱藏 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media print {
+            @page {
+                size: 87.5mm 60.7mm;
+                margin: 0;
+            }
+            body {
+                background: none;
+            }
+            #sidebar {
+                display: none;
+            }
+            #preview-area {
+                padding: 0;
+                margin: 0;
+                display: block;
+                background: none;
+            }
+            #label-container {
+                transform: none;
+                display: block;
+            }
+            .label-page {
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <h2>列印設定面板</h2>
+    
+    <div class="input-group">
+        <label>快速選擇品項</label>
+        <select id="itemSelect" onchange="syncFromSelect()">
+            <option value="">-- 手動輸入 --</option>
+            <option value="BIO有機黑美人菇/150g,30">BIO有機黑美人菇/150g (30入)</option>
+            <option value="家樂福有機杏鮑菇(500g/包),20">家樂福有機杏鮑菇(500g/包) (20入)</option>
+            <option value="家樂福有機雙響菇150g,24">家樂福有機雙響菇150G (24入)</option>
+            <option value="家樂福有機金針菇200g,50">家樂福有機金針菇200g (50入)</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>單品名稱</label>
+        <input type="text" id="inputName" placeholder="請輸入單品名稱" oninput="updateContent()">
+    </div>
+
+    <div class="input-group">
+        <label>箱入數</label>
+        <input type="number" id="inputCount" placeholder="請輸入數量" oninput="updateContent()">
+    </div>
+
+    <div class="input-group">
+        <label>到店日期</label>
+        <input type="date" id="arrivalDate" onchange="updateContent()">
+        <!-- 面板顯示縮寫後的年月日星期 -->
+        <span id="panelDateHint" class="date-display-text"></span>
+    </div>
+
+    <div class="checkbox-group" onclick="toggleGift(event)">
+        <input type="checkbox" id="inputIsGift" onchange="updateContent()">
+        <label style="margin-bottom: 0; cursor: pointer;">標記為贈品</label>
+    </div>
+
+    <button onclick="window.print()">執行列印</button>
+</div>
+
+<div id="preview-area">
+    <div id="label-container">
+        <div class="label-page" id="label">
+            <div class="field" style="left: 4.8mm; top: 3.3mm;">到店日: <span id="displayDate"></span></div>
+            <div class="field" style="left: 4.8mm; top: 8.7mm;">供應商編號: 22H907</div>
+            <div class="field" style="left: 4.8mm; top: 14mm;">供應商名稱: 綠園生活有限公司</div>
+            <div class="field" style="left: 4.8mm; top: 19.4mm;">箱入數:</div>
+            <div class="field" style="left: 4.8mm; top: 24.8mm;">單品名稱:</div>
+
+            <div class="field" id="displayCount" style="left: 20mm; top: 19.4mm;"></div>
+            
+            <div id="displayNameContainer" class="field">
+                <span id="displayName"></span>
+            </div>
+            
+            <div class="field" id="solarDay" style="left: 12.5mm; top: 48mm;"></div>
+            
+            <!-- 贈品框：位置固定在 55mm -->
+            <div class="field" id="giftBox" style="left: 55mm; top: 48mm;">
+                <span>贈品</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        // 1. 自動計算「明天」日期作為預設值
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        
+        const year = tomorrow.getFullYear();
+        const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const day = String(tomorrow.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
+        
+        // 2. 設定面板日期預設值
+        document.getElementById('arrivalDate').value = dateString;
+        
+        // 3. 預設選擇「手動輸入」
+        const select = document.getElementById('itemSelect');
+        select.selectedIndex = 0;
+        
+        // 4. 初始化顯示
+        updateContent();
+    };
+
+    function syncFromSelect() {
+        const select = document.getElementById('itemSelect');
+        const inputName = document.getElementById('inputName');
+        const inputCount = document.getElementById('inputCount');
+
+        if (select.value) {
+            const [name, count] = select.value.split(',');
+            inputName.value = name;
+            inputCount.value = count;
+        } else {
+            inputName.value = "";
+            inputCount.value = "";
+        }
+        updateContent();
+    }
+
+    function toggleGift(e) {
+        const cb = document.getElementById('inputIsGift');
+        if (e.target !== cb) {
+            cb.checked = !cb.checked;
+        }
+        updateContent();
+    }
+
+    function updateContent() {
+        const nameInput = document.getElementById('inputName').value;
+        const count = document.getElementById('inputCount').value;
+        const dateVal = document.getElementById('arrivalDate').value;
+        const isGift = document.getElementById('inputIsGift').checked;
+        
+        const nameSpan = document.getElementById('displayName');
+        const nameContainer = document.getElementById('displayNameContainer');
+        const dateSpan = document.getElementById('displayDate');
+        const solarDayDiv = document.getElementById('solarDay');
+        const panelHint = document.getElementById('panelDateHint');
+
+        // 更新面板日期提示 (縮寫格式)
+        if (dateVal) {
+            // 解析 yyyy-mm-dd 字串，避免瀏覽器時區轉換錯誤
+            const parts = dateVal.split('-');
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            const weekName = weekDays[d.getDay()];
+            
+            // 僅顯示 2026/05/11 (星期一)
+            panelHint.innerText = `${y}/${m}/${day} (${weekName})`;
+            
+            // 恢復顯示太陽日框的內容
+            solarDayDiv.innerText = calculateSolarDay(d);
+        } else {
+            panelHint.innerText = "";
+            solarDayDiv.innerText = "";
+        }
+
+        // 依據要求：右側標籤「到店日:」後方永遠維持空白
+        dateSpan.innerText = "";
+
+        // 渲染品名
+        nameSpan.innerText = nameInput || "";
+        nameSpan.style.fontSize = "24pt";
+        
+        let currentFontSize = 24;
+        const maxWidth = nameContainer.offsetWidth;
+        while (nameSpan.offsetWidth > maxWidth && currentFontSize > 8) {
+            currentFontSize -= 0.5;
+            nameSpan.style.fontSize = currentFontSize + "pt";
+        }
+        
+        // 渲染數量
+        document.getElementById('displayCount').innerText = count ? count + " 入" : "";
+
+        // 處理贈品框
+        const giftBox = document.getElementById('giftBox');
+        giftBox.style.display = isGift ? 'flex' : 'none';
+    }
+
+    function calculateSolarDay(date) {
+        const year = date.getFullYear();
+        const firstDayOfYear = new Date(year, 0, 1);
+        const diff = Math.floor((date - firstDayOfYear) / (1000 * 60 * 60 * 24)) + 1;
+        return String(diff).padStart(3, '0');
+    }
+</script>
+
+</body>
+</html>
