@@ -169,11 +169,7 @@
             font-size: 13pt;
         }
 
-        #displayDate {
-            font-weight: bold;
-        }
-
-        /* 太陽日外框 - 修正寬度與內距 */
+        /* 太陽日外框 */
         #solarDay {
             font-size: 18pt;
             font-weight: bold;
@@ -273,7 +269,7 @@
     </div>
 
     <div class="input-group">
-        <label>到店日期</label>
+        <label>選擇日期 (僅供計算太陽日)</label>
         <input type="date" id="arrivalDate" onchange="updateContent()">
         <span id="panelDateHint" class="date-display-text"></span>
     </div>
@@ -289,8 +285,9 @@
 <div id="preview-area">
     <div id="label-container">
         <div class="label-page" id="label">
-            <!-- 所有欄位對齊 left: 12mm -->
-            <div class="field" style="left: 12mm; top: 3.3mm;">到店日: <span id="displayDate"></span></div>
+            <!-- 到店日固定顯示為空白 -->
+            <div class="field" style="left: 12mm; top: 3.3mm;">到店日: </div>
+            
             <div class="field" style="left: 12mm; top: 8.7mm;">供應商編號: 22H907</div>
             <div class="field" style="left: 12mm; top: 14mm;">供應商名稱: 綠園生活有限公司</div>
             <div class="field" style="left: 12mm; top: 19.4mm;">箱入數:</div>
@@ -302,10 +299,9 @@
                 <span id="displayName"></span>
             </div>
             
-            <!-- 底部欄位：基準 top 為 48mm -->
+            <!-- 底部欄位 -->
             <div class="field" id="solarDay" style="left: 12mm; top: 48mm;"></div>
             
-            <!-- MIA 標籤位置會隨贈品勾選而變動，防止與太陽日及贈品框重疊 -->
             <div class="field" id="miaTag" style="left: 30mm; top: 48mm;">Mia C'bon</div>
 
             <div class="field" id="giftBox" style="left: 58mm; top: 48mm;">
@@ -418,13 +414,12 @@
         
         const nameSpan = document.getElementById('displayName');
         const nameContainer = document.getElementById('displayNameContainer');
-        const dateSpan = document.getElementById('displayDate');
         const solarDayDiv = document.getElementById('solarDay');
         const panelHint = document.getElementById('panelDateHint');
         const miaTag = document.getElementById('miaTag');
         const giftBox = document.getElementById('giftBox');
 
-        // 日期計算
+        // 日期計算僅用於顯示面板提示與太陽日計算
         if (dateVal) {
             const parts = dateVal.split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -434,17 +429,16 @@
             const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
             panelHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
             solarDayDiv.innerText = calculateSolarDay(d);
-            dateSpan.innerText = `${y}/${m}/${day}`;
+            solarDayDiv.style.visibility = 'visible';
         } else {
             panelHint.innerText = "";
             solarDayDiv.innerText = "";
-            dateSpan.innerText = "";
+            solarDayDiv.style.visibility = 'hidden';
         }
 
         // MIA 字樣與贈品框顯示邏輯
         if (warehouse === 'mia') {
             miaTag.style.display = 'flex';
-            // 當勾選贈品時，為了平衡版面縮減間距
             if (isGift) {
                 miaTag.style.left = '28mm';
                 giftBox.style.left = '58mm';
@@ -453,7 +447,6 @@
             }
         } else {
             miaTag.style.display = 'none';
-            // 非 MIA 倉時，贈品框可以靠左一點
             giftBox.style.left = '32mm';
         }
 
