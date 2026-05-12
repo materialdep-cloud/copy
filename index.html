@@ -187,6 +187,14 @@
             align-items: center;
         }
 
+        /* MIA 倉專屬字樣 */
+        #miaTag {
+            font-size: 16pt;
+            font-weight: bold;
+            display: none; /* 預設隱藏 */
+            align-items: center;
+        }
+
         /* 贈品框樣式 */
         #giftBox {
             font-size: 16pt;
@@ -232,15 +240,21 @@
 
 <div id="sidebar">
     <h2>列印設定面板</h2>
+
+    <div class="input-group">
+        <label>1. 選擇倉別</label>
+        <select id="warehouseSelect" onchange="updateItemOptions()">
+            <option value="dayuan">大園倉</option>
+            <option value="xiluo">西螺倉</option>
+            <option value="mia">MIA 倉</option>
+            <option value="others">其他倉</option>
+        </select>
+    </div>
     
     <div class="input-group">
-        <label>快速選擇品項</label>
+        <label>2. 快速選擇品項</label>
         <select id="itemSelect" onchange="syncFromSelect()">
-            <option value="">-- 手動輸入 --</option>
-            <option value="BIO有機黑美人菇/150g,30">BIO有機黑美人菇/150g (30入)</option>
-            <option value="家樂福有機杏鮑菇(500g/包),20">家樂福有機杏鮑菇(500g/包) (20入)</option>
-            <option value="家樂福有機雙響菇150g,24">家樂福有機雙響菇150G (24入)</option>
-            <option value="家樂福有機金針菇200g,50">家樂福有機金針菇200g (50入)</option>
+            <!-- 由 JavaScript 動態生成 -->
         </select>
     </div>
 
@@ -286,6 +300,9 @@
             
             <div class="field" id="solarDay" style="left: 12.5mm; top: 48mm;"></div>
             
+            <!-- MIA 倉專屬欄位：位於太陽日與贈品中間 -->
+            <div class="field" id="miaTag" style="left: 31.5mm; top: 49.5mm;">Mia C'bon</div>
+
             <!-- 贈品框：位置固定在 55mm -->
             <div class="field" id="giftBox" style="left: 55mm; top: 48mm;">
                 <span>贈品</span>
@@ -295,8 +312,44 @@
 </div>
 
 <script>
+    // 品項資料庫
+    const itemDatabase = {
+        dayuan: [
+            { name: "家樂福有機特級杏鮑菇1kg", count: 20, display: "家樂福有機特級杏鮑菇1kg (20入)" },
+            { name: "BIO有機黑美人菇/150g", count: 30, display: "BIO有機黑美人菇/150g (30入)" },
+            { name: "家樂福有機雙響菇150g", count: 24, display: "家樂福有機雙響菇150G (24入)" },
+            { name: "家樂福有機金針菇200g", count: 50, display: "家樂福有機金針菇200g (50入)" },
+            { name: "有機金針菇(森甜金菇)333g", count: 24, display: "有機金針菇(森甜金菇)333g (24入)" },
+            { name: "家樂福有機杏鮑菇(500g/包)", count: 20, display: "家樂福有機杏鮑菇(500g/包) (20入)" },
+            { name: "有機柳松菇150G", count: 36, display: "有機柳松菇150G (36入)" },    
+            { name: "有機活株韓小菇150g", count: 12, display: "有機活株韓小菇150g (12入)" },
+            { name: "有機金滑菇250g", count: 12, display: "有機金滑菇250g (24入)" }      
+        ],
+        xiluo: [
+            { name: "家樂福有機特級杏鮑菇1kg", count: 20, display: "家樂福有機特級杏鮑菇1kg (20入)" },
+            { name: "BIO有機黑美人菇/150g", count: 30, display: "BIO有機黑美人菇/150g (30入)" },
+            { name: "家樂福有機雙響菇150g", count: 24, display: "家樂福有機雙響菇150G (24入)" },
+            { name: "家樂福有機金針菇200g", count: 50, display: "家樂福有機金針菇200g (50入)" },
+            { name: "有機金針菇(森甜金菇)333g", count: 24, display: "有機金針菇(森甜金菇)333g (24入)" },
+            { name: "有機柳松菇150G", count: 36, display: "有機柳松菇150G (36入)" },
+            { name: "有機活株韓小菇150g", count: 12, display: "有機活株韓小菇150g (12入)" },
+            { name: "有機金滑菇250g", count: 12, display: "有機金滑菇250g (24入)" },
+            { name: "有機黑美人菇/500g", count: 20, display: "有機黑美人菇/500g (20入)" },
+            { name: "有機57號地瓜500g", count: 25, display: "有機57號地瓜500g (25入)" },
+            { name: "有機66號紅地瓜500g", count: 25, display: "有機66號紅地瓜500g (25入)" },
+            { name: "有機金時地瓜500g", count: 25, display: "有機金時地瓜500g (25入)" },
+            { name: "有機銀耳露200ml", count: 24, display: "有機銀耳露200ml (24入)" }        
+        ],
+        mia: [
+            { name: "有機金針菇200g", count: 50, display: "有機金針菇200g (50入)" },
+            { name: "有機鴻喜菇150g", count: 30, display: "有機鴻喜菇150g (30入)" },
+            { name: "有機雪白菇150g", count: 30, display: "有機雪白菇150g (30入)" },
+            { name: "有機雙響菇150g", count: 24, display: "有機雙響菇150g (24入)" }
+        ],
+        others: []
+    };
+
     window.onload = function() {
-        // 1. 自動計算「明天」日期作為預設值
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -306,16 +359,28 @@
         const day = String(tomorrow.getDate()).padStart(2, '0');
         const dateString = `${year}-${month}-${day}`;
         
-        // 2. 設定面板日期預設值
         document.getElementById('arrivalDate').value = dateString;
-        
-        // 3. 預設選擇「手動輸入」
-        const select = document.getElementById('itemSelect');
-        select.selectedIndex = 0;
-        
-        // 4. 初始化顯示
+        updateItemOptions();
         updateContent();
     };
+
+    function updateItemOptions() {
+        const warehouse = document.getElementById('warehouseSelect').value;
+        const itemSelect = document.getElementById('itemSelect');
+        const items = itemDatabase[warehouse] || [];
+
+        itemSelect.innerHTML = '<option value="">-- 手動輸入 --</option>';
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = `${item.name},${item.count}`;
+            option.textContent = item.display;
+            itemSelect.appendChild(option);
+        });
+
+        document.getElementById('inputName').value = "";
+        document.getElementById('inputCount').value = "";
+        updateContent();
+    }
 
     function syncFromSelect() {
         const select = document.getElementById('itemSelect');
@@ -342,6 +407,7 @@
     }
 
     function updateContent() {
+        const warehouse = document.getElementById('warehouseSelect').value;
         const nameInput = document.getElementById('inputName').value;
         const count = document.getElementById('inputCount').value;
         const dateVal = document.getElementById('arrivalDate').value;
@@ -352,36 +418,29 @@
         const dateSpan = document.getElementById('displayDate');
         const solarDayDiv = document.getElementById('solarDay');
         const panelHint = document.getElementById('panelDateHint');
+        const miaTag = document.getElementById('miaTag');
 
-        // 更新面板日期提示 (縮寫格式)
+        // 更新日期
         if (dateVal) {
-            // 解析 yyyy-mm-dd 字串，避免瀏覽器時區轉換錯誤
             const parts = dateVal.split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
-            
             const y = d.getFullYear();
             const m = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
             const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-            const weekName = weekDays[d.getDay()];
-            
-            // 僅顯示 2026/05/11 (星期一)
-            panelHint.innerText = `${y}/${m}/${day} (${weekName})`;
-            
-            // 恢復顯示太陽日框的內容
+            panelHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
             solarDayDiv.innerText = calculateSolarDay(d);
         } else {
             panelHint.innerText = "";
             solarDayDiv.innerText = "";
         }
 
-        // 依據要求：右側標籤「到店日:」後方永遠維持空白
-        dateSpan.innerText = "";
+        // MIA 倉連動顯示 "Mia C'bon"
+        miaTag.style.display = (warehouse === 'mia') ? 'flex' : 'none';
 
         // 渲染品名
         nameSpan.innerText = nameInput || "";
         nameSpan.style.fontSize = "24pt";
-        
         let currentFontSize = 24;
         const maxWidth = nameContainer.offsetWidth;
         while (nameSpan.offsetWidth > maxWidth && currentFontSize > 8) {
@@ -389,12 +448,9 @@
             nameSpan.style.fontSize = currentFontSize + "pt";
         }
         
-        // 渲染數量
+        // 渲染數量與贈品
         document.getElementById('displayCount').innerText = count ? count + " 入" : "";
-
-        // 處理贈品框
-        const giftBox = document.getElementById('giftBox');
-        giftBox.style.display = isGift ? 'flex' : 'none';
+        document.getElementById('giftBox').style.display = isGift ? 'flex' : 'none';
     }
 
     function calculateSolarDay(date) {
