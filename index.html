@@ -83,7 +83,7 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* 當箱入數被修改時的樣式 */
+        /* 當箱入數或單品名稱被修改時的樣式 */
         .is-modified {
             background-color: #fcb6b6 !important;
             border-color: #ffb3b3 !important;
@@ -355,8 +355,9 @@
         others: []
     };
 
-    // 紀錄當前快速選擇的預設箱入數
+    // 紀錄當前快速選擇的預設數值
     let currentDefaultCount = null;
+    let currentDefaultName = null;
 
     window.onload = function() {
         const today = new Date();
@@ -388,7 +389,8 @@
 
         document.getElementById('inputName').value = "";
         document.getElementById('inputCount').value = "";
-        currentDefaultCount = null; // 重設預設值追蹤
+        currentDefaultCount = null;
+        currentDefaultName = null;
         updateContent();
     }
 
@@ -401,10 +403,12 @@
             const [name, count] = select.value.split(',');
             inputName.value = name;
             inputCount.value = count;
-            currentDefaultCount = count; // 記錄預設值
+            currentDefaultName = name; // 記錄預設名稱
+            currentDefaultCount = count; // 記錄預設箱數
         } else {
             inputName.value = "";
             inputCount.value = "";
+            currentDefaultName = null;
             currentDefaultCount = null;
         }
         updateContent();
@@ -421,7 +425,7 @@
     function updateContent() {
         const warehouse = document.getElementById('warehouseSelect').value;
         const nameInput = document.getElementById('inputName').value;
-        const count = document.getElementById('inputCount').value;
+        const countInputVal = document.getElementById('inputCount').value;
         const dateVal = document.getElementById('arrivalDate').value;
         const isGift = document.getElementById('inputIsGift').checked;
         
@@ -432,12 +436,20 @@
         const miaTag = document.getElementById('miaTag');
         const giftBox = document.getElementById('giftBox');
         
-        // 箱入數樣式切換邏輯
-        const countInput = document.getElementById('inputCount');
-        if (currentDefaultCount !== null && count !== currentDefaultCount) {
-            countInput.classList.add('is-modified');
+        // 單品名稱樣式切換邏輯
+        const nameInputEl = document.getElementById('inputName');
+        if (currentDefaultName !== null && nameInput !== currentDefaultName) {
+            nameInputEl.classList.add('is-modified');
         } else {
-            countInput.classList.remove('is-modified');
+            nameInputEl.classList.remove('is-modified');
+        }
+
+        // 箱入數樣式切換邏輯
+        const countInputEl = document.getElementById('inputCount');
+        if (currentDefaultCount !== null && countInputVal !== currentDefaultCount) {
+            countInputEl.classList.add('is-modified');
+        } else {
+            countInputEl.classList.remove('is-modified');
         }
 
         // 日期計算僅用於顯示面板提示與太陽日計算
@@ -483,7 +495,7 @@
             nameSpan.style.fontSize = currentFontSize + "pt";
         }
         
-        document.getElementById('displayCount').innerText = count ? count + " 入" : "";
+        document.getElementById('displayCount').innerText = countInputVal ? countInputVal + " 入" : "";
     }
 
     function calculateSolarDay(date) {
