@@ -10,14 +10,14 @@
             --label-width: 87.5mm;
             --label-height: 60.7mm;
             --sidebar-width: 350px;
-            /* 左側留邊 12mm，右側也留邊 12mm */
-            --content-left-margin: 20mm;
-            --content-right-margin: 20mm;
-            --max-content-width: calc(87.5mm - var(--content-left-margin)); 
+            
+            /* 左右留邊調整為 4mm */
+            --content-padding-x: 8mm;
+            --max-content-width: calc(var(--label-width) - (var(--content-padding-x) * 2)); 
         }
 
         body {
-            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            font-family: "Microsoft JhengHei", "PingFang TC", Arial, sans-serif;
             display: flex;
             margin: 0;
             background-color: #e9ecef;
@@ -84,7 +84,6 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* 當箱入數或單品名稱被修改時的樣式 */
         .is-modified {
             background-color: #fcb6b6 !important;
             border-color: #ffb3b3 !important;
@@ -143,25 +142,30 @@
             box-shadow: 0 15px 45px rgba(0,0,0,0.15);
             overflow: hidden;
             flex-shrink: 0;
+            box-sizing: border-box;
         }
 
         .field {
             position: absolute;
             font-size: 11pt;
             color: #000;
-            line-height: 1;
+            line-height: 1.2;
             white-space: nowrap;
         }
 
-        /* 品項名稱容器 */
-        #displayNameContainer {
-            left: var(--content-left-margin);
-            top: 30mm;
+        /* 內容區域限制在左右 4mm 內 */
+        .content-aligned {
+            left: var(--content-padding-x);
             width: var(--max-content-width);
-            height: 12mm;
+        }
+
+        /* 品項名稱容器 - 強化自動縮放 */
+        #displayNameContainer {
+            top: 30mm;
+            height: 15mm;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             overflow: hidden;
         }
 
@@ -170,6 +174,7 @@
             font-size: 24pt;
             white-space: nowrap;
             display: inline-block;
+            line-height: 1;
         }
 
         #displayCount {
@@ -183,7 +188,7 @@
             font-weight: bold;
             letter-spacing: 1px;
             border: 2px solid #000;
-            padding: 1mm 1mm;
+            padding: 1mm;
             width: 14mm;
             height: 8mm;
             box-sizing: border-box;
@@ -207,7 +212,7 @@
             font-size: 16pt;
             font-weight: bold;
             border: 2px solid #000;
-            padding: 1mm 3mm;
+            padding: 0 3mm;
             height: 8mm;
             box-sizing: border-box;
             display: none; 
@@ -248,7 +253,7 @@
 <body>
 
 <div id="sidebar">
-    <h2>列印設定面板</h2>
+    <h2>標籤列印系統</h2>
 
     <div class="input-group">
         <label>1. 選擇倉別</label>
@@ -277,7 +282,7 @@
     </div>
 
     <div class="input-group">
-        <label>選擇日期 (僅供計算太陽日)</label>
+        <label>選擇日期 (計算太陽日)</label>
         <input type="date" id="arrivalDate" onchange="updateContent()">
         <span id="panelDateHint" class="date-display-text"></span>
     </div>
@@ -293,26 +298,24 @@
 <div id="preview-area">
     <div id="label-container">
         <div class="label-page" id="label">
-            <!-- 到店日固定顯示為空白 -->
-            <div class="field" style="left: 12mm; top: 3.3mm;">到店日: </div>
-            
-            <div class="field" style="left: 12mm; top: 8.7mm;">供應商編號: 22H907</div>
-            <div class="field" style="left: 12mm; top: 14mm;">供應商名稱: 綠園生活有限公司</div>
-            <div class="field" style="left: 12mm; top: 19.4mm;">箱入數:</div>
-            <div class="field" style="left: 12mm; top: 24.8mm;">單品名稱:</div>
+            <!-- 標註線與固定欄位，全部套用 content-aligned 確保左邊距 4mm -->
+            <div class="field content-aligned" style="top: 3.3mm;">到店日: </div>
+            <div class="field content-aligned" style="top: 8.7mm;">供應商編號: 22H907</div>
+            <div class="field content-aligned" style="top: 14mm;">供應商名稱: 綠園生活有限公司</div>
+            <div class="field content-aligned" style="top: 19.4mm;">箱入數:</div>
+            <div class="field content-aligned" style="top: 24.8mm;">單品名稱:</div>
 
-            <div class="field" id="displayCount" style="left: 28mm; top: 19.4mm;"></div>
+            <!-- 動態數據，相對於固定標題進行位移 -->
+            <div class="field" id="displayCount" style="left: 20mm; top: 19.4mm;"></div>
             
-            <div id="displayNameContainer" class="field">
+            <div id="displayNameContainer" class="field content-aligned">
                 <span id="displayName"></span>
             </div>
             
             <!-- 底部欄位 -->
-            <div class="field" id="solarDay" style="left: 12mm; top: 48mm;"></div>
-            
-            <div class="field" id="miaTag" style="left: 30mm; top: 48mm;">Mia C'bon</div>
-
-            <div class="field" id="giftBox" style="left: 58mm; top: 48mm;">
+            <div class="field content-aligned" id="solarDay" style="top: 48mm;"></div>
+            <div class="field" id="miaTag" style="left: 22mm; top: 48mm;">Mia C'bon</div>
+            <div class="field" id="giftBox" style="left: 54mm; top: 48mm;">
                 <span>贈品</span>
             </div>
         </div>
@@ -356,7 +359,6 @@
         others: []
     };
 
-    // 紀錄當前快速選擇的預設數值
     let currentDefaultCount = null;
     let currentDefaultName = null;
 
@@ -404,8 +406,8 @@
             const [name, count] = select.value.split(',');
             inputName.value = name;
             inputCount.value = count;
-            currentDefaultName = name; // 記錄預設名稱
-            currentDefaultCount = count; // 記錄預設箱數
+            currentDefaultName = name;
+            currentDefaultCount = count;
         } else {
             inputName.value = "";
             inputCount.value = "";
@@ -437,7 +439,7 @@
         const miaTag = document.getElementById('miaTag');
         const giftBox = document.getElementById('giftBox');
         
-        // 單品名稱樣式切換邏輯
+        // 樣式檢測
         const nameInputEl = document.getElementById('inputName');
         if (currentDefaultName !== null && nameInput !== currentDefaultName) {
             nameInputEl.classList.add('is-modified');
@@ -445,7 +447,6 @@
             nameInputEl.classList.remove('is-modified');
         }
 
-        // 箱入數樣式切換邏輯
         const countInputEl = document.getElementById('inputCount');
         if (currentDefaultCount !== null && countInputVal !== currentDefaultCount) {
             countInputEl.classList.add('is-modified');
@@ -453,7 +454,7 @@
             countInputEl.classList.remove('is-modified');
         }
 
-        // 日期計算僅用於顯示面板提示與太陽日計算
+        // 太陽日計算
         if (dateVal) {
             const parts = dateVal.split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -470,28 +471,26 @@
             solarDayDiv.style.visibility = 'hidden';
         }
 
-        // MIA 字樣與贈品框顯示邏輯
+        // MIA 與 贈品佈局 (相對於 4mm 邊界微調)
         if (warehouse === 'mia') {
             miaTag.style.display = 'flex';
-            if (isGift) {
-                miaTag.style.left = '28mm';
-                giftBox.style.left = '58mm';
-            } else {
-                miaTag.style.left = '30mm';
-            }
+            miaTag.style.left = '22mm'; // 從邊界算起
+            giftBox.style.left = '54mm';
         } else {
             miaTag.style.display = 'none';
-            giftBox.style.left = '32mm';
+            giftBox.style.left = '22mm';
         }
 
         giftBox.style.display = isGift ? 'flex' : 'none';
 
-        // 品名自動縮放
+        // 品名自動縮放邏輯
         nameSpan.innerText = nameInput || "";
-        nameSpan.style.fontSize = "24pt";
-        let currentFontSize = 24;
+        nameSpan.style.fontSize = "24pt"; 
+        
         const maxWidth = nameContainer.offsetWidth;
-        while (nameSpan.offsetWidth > maxWidth && currentFontSize > 8) {
+        let currentFontSize = 24;
+        
+        while (nameSpan.offsetWidth > maxWidth && currentFontSize > 6) {
             currentFontSize -= 0.5;
             nameSpan.style.fontSize = currentFontSize + "pt";
         }
