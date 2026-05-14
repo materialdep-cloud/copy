@@ -11,7 +11,7 @@
             --label-height: 60.7mm;
             --sidebar-width: 350px;
             
-            /* 左右留邊調整為 12mm */
+            /* 左右留邊調整為 12mm (原本設定 8mm 是因為左右加總，現在統一使用單邊 4mm 計算) */
             --content-padding-x: 12mm;
             --max-content-width: calc(var(--label-width) - (var(--content-padding-x) * 2)); 
         }
@@ -153,19 +153,20 @@
             white-space: nowrap;
         }
 
-        /* 內容區域限制在左右 4mm 內 */
+        /* 內容區域限制在左右指定留白內 */
         .content-aligned {
             left: var(--content-padding-x);
             width: var(--max-content-width);
         }
 
-        /* 品項名稱容器 - 強化自動縮放 */
+        /* 品項名稱容器 - 設置為水平置中 */
         #displayNameContainer {
             top: 30mm;
             height: 15mm;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center; /* 修改為置中 */
+            text-align: center;      /* 確保內文對齊 */
             overflow: hidden;
         }
 
@@ -298,16 +299,17 @@
 <div id="preview-area">
     <div id="label-container">
         <div class="label-page" id="label">
-            <!-- 標註線與固定欄位，全部套用 content-aligned 確保左邊距 4mm -->
+            <!-- 固定欄位標頭，保持靠左對齊 -->
             <div class="field content-aligned" style="top: 3.3mm;">到店日: </div>
             <div class="field content-aligned" style="top: 8.7mm;">供應商編號: 22H907</div>
             <div class="field content-aligned" style="top: 14mm;">供應商名稱: 綠園生活有限公司</div>
             <div class="field content-aligned" style="top: 19.4mm;">箱入數:</div>
             <div class="field content-aligned" style="top: 24.8mm;">單品名稱:</div>
 
-            <!-- 動態數據，相對於固定標題進行位移 -->
+            <!-- 箱入數值 (靠近「箱入數:」固定標頭) -->
             <div class="field" id="displayCount" style="left: 20mm; top: 19.4mm;"></div>
             
+            <!-- 品名容器 (寬度佔滿內容區並置中) -->
             <div id="displayNameContainer" class="field content-aligned">
                 <span id="displayName"></span>
             </div>
@@ -483,13 +485,14 @@
 
         giftBox.style.display = isGift ? 'flex' : 'none';
 
-        // 品名自動縮放邏輯
+        // 品名自動縮放與置中邏輯
         nameSpan.innerText = nameInput || "";
         nameSpan.style.fontSize = "24pt"; 
         
         const maxWidth = nameContainer.offsetWidth;
         let currentFontSize = 24;
         
+        // 先重置字體大小後計算寬度，避免縮放失效
         while (nameSpan.offsetWidth > maxWidth && currentFontSize > 6) {
             currentFontSize -= 0.5;
             nameSpan.style.fontSize = currentFontSize + "pt";
