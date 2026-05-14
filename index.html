@@ -11,7 +11,7 @@
             --label-height: 60.7mm;
             --sidebar-width: 350px;
             
-            /* 左右留邊調整為 12mm (原本設定 8mm 是因為左右加總，現在統一使用單邊 4mm 計算) */
+            /* 左右留邊調整為 12mm */
             --content-padding-x: 12mm;
             --max-content-width: calc(var(--label-width) - (var(--content-padding-x) * 2)); 
         }
@@ -165,8 +165,8 @@
             height: 15mm;
             display: flex;
             align-items: center;
-            justify-content: center; /* 修改為置中 */
-            text-align: center;      /* 確保內文對齊 */
+            justify-content: center; 
+            text-align: center;      
             overflow: hidden;
         }
 
@@ -178,9 +178,11 @@
             line-height: 1;
         }
 
+        /* 入數值位置相對邊界計算 */
         #displayCount {
             font-weight: bold;
             font-size: 13pt;
+            left: calc(var(--content-padding-x) + 16mm);
         }
 
         /* 太陽日外框 */
@@ -199,7 +201,7 @@
             align-items: center;
         }
 
-        /* MIA 倉專屬字樣 */
+        /* 底部動態欄位 */
         #miaTag {
             font-size: 16pt;
             font-weight: bold;
@@ -208,7 +210,6 @@
             height: 8mm;
         }
 
-        /* 贈品框樣式 */
         #giftBox {
             font-size: 16pt;
             font-weight: bold;
@@ -299,25 +300,25 @@
 <div id="preview-area">
     <div id="label-container">
         <div class="label-page" id="label">
-            <!-- 固定欄位標頭，保持靠左對齊 -->
+            <!-- 固定欄位標頭 -->
             <div class="field content-aligned" style="top: 3.3mm;">到店日: </div>
             <div class="field content-aligned" style="top: 8.7mm;">供應商編號: 22H907</div>
             <div class="field content-aligned" style="top: 14mm;">供應商名稱: 綠園生活有限公司</div>
             <div class="field content-aligned" style="top: 19.4mm;">箱入數:</div>
             <div class="field content-aligned" style="top: 24.8mm;">單品名稱:</div>
 
-            <!-- 箱入數值 (靠近「箱入數:」固定標頭) -->
-            <div class="field" id="displayCount" style="left: 20mm; top: 19.4mm;"></div>
+            <!-- 箱入數值 -->
+            <div class="field" id="displayCount" style="top: 19.4mm;"></div>
             
-            <!-- 品名容器 (寬度佔滿內容區並置中) -->
+            <!-- 品名容器 -->
             <div id="displayNameContainer" class="field content-aligned">
                 <span id="displayName"></span>
             </div>
             
             <!-- 底部欄位 -->
             <div class="field content-aligned" id="solarDay" style="top: 48mm;"></div>
-            <div class="field" id="miaTag" style="left: 22mm; top: 48mm;">Mia C'bon</div>
-            <div class="field" id="giftBox" style="left: 54mm; top: 48mm;">
+            <div class="field" id="miaTag" style="top: 48mm;">Mia C'bon</div>
+            <div class="field" id="giftBox" style="top: 48mm;">
                 <span>贈品</span>
             </div>
         </div>
@@ -440,8 +441,12 @@
         const panelHint = document.getElementById('panelDateHint');
         const miaTag = document.getElementById('miaTag');
         const giftBox = document.getElementById('giftBox');
+
+        // 從 CSS 讀取邊距數值 (12mm)
+        const rootStyle = getComputedStyle(document.documentElement);
+        const paddingX = parseFloat(rootStyle.getPropertyValue('--content-padding-x')) || 12;
         
-        // 樣式檢測
+        // 樣式檢測 (是否修改過預設值)
         const nameInputEl = document.getElementById('inputName');
         if (currentDefaultName !== null && nameInput !== currentDefaultName) {
             nameInputEl.classList.add('is-modified');
@@ -473,26 +478,25 @@
             solarDayDiv.style.visibility = 'hidden';
         }
 
-        // MIA 與 贈品佈局 (相對於 4mm 邊界微調)
+        // 底部元件動態位移：根據 12mm 邊界調整
         if (warehouse === 'mia') {
             miaTag.style.display = 'flex';
-            miaTag.style.left = '22mm'; // 從邊界算起
-            giftBox.style.left = '54mm';
+            miaTag.style.left = (paddingX + 16) + 'mm'; // 太陽日寬度 14mm + 間距 2mm
+            giftBox.style.left = (paddingX + 46) + 'mm'; // 再往右推
         } else {
             miaTag.style.display = 'none';
-            giftBox.style.left = '22mm';
+            giftBox.style.left = (paddingX + 16) + 'mm'; // 緊鄰太陽日
         }
 
         giftBox.style.display = isGift ? 'flex' : 'none';
 
-        // 品名自動縮放與置中邏輯
+        // 品名自動縮放與置中
         nameSpan.innerText = nameInput || "";
         nameSpan.style.fontSize = "24pt"; 
         
         const maxWidth = nameContainer.offsetWidth;
         let currentFontSize = 24;
         
-        // 先重置字體大小後計算寬度，避免縮放失效
         while (nameSpan.offsetWidth > maxWidth && currentFontSize > 6) {
             currentFontSize -= 0.5;
             nameSpan.style.fontSize = currentFontSize + "pt";
