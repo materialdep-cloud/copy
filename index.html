@@ -365,7 +365,8 @@
     let currentDefaultCount = null;
     let currentDefaultName = null;
 
-    window.onload = function() {
+    // 計算並重設日期為明天的主要函式
+    function resetDateToTomorrow() {
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -375,10 +376,30 @@
         const day = String(tomorrow.getDate()).padStart(2, '0');
         const dateString = `${year}-${month}-${day}`;
         
-        document.getElementById('arrivalDate').value = dateString;
+        const dateInput = document.getElementById('arrivalDate');
+        // 如果輸入框目前沒值，或者數值已經跟最新的明天日期不同，才進行重設（避免影響正在手動挑選日期的使用者）
+        if (!dateInput.value || dateInput.value !== dateString) {
+            dateInput.value = dateString;
+            updateContent();
+        }
+    }
+
+    // 1. 初次載入網頁時執行
+    window.onload = function() {
+        resetDateToTomorrow();
         updateItemOptions();
         updateContent();
     };
+
+    // 2. 當使用者切換分頁重新回到此頁面，或從鎖定螢幕喚醒時自動更新
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            resetDateToTomorrow();
+        }
+    });
+
+    // 3. 備用保險：如果頁面不小心一直開著，每隔 10 分鐘在背景檢查一次是否跨日
+    setInterval(resetDateToTomorrow, 600000);
 
     function updateItemOptions() {
         const warehouse = document.getElementById('warehouseSelect').value;
@@ -461,7 +482,7 @@
             countInputEl.classList.remove('is-modified');
         }
 
-        // 太陽日計算
+        // 太陽日計算與顯示
         if (dateVal) {
             const parts = dateVal.split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
