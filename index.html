@@ -222,6 +222,22 @@
             align-items: center;
         }
 
+        /* 店家名稱框樣式 */
+        #storeBox {
+            font-size: 14pt;
+            font-weight: bold;
+            border: 2px solid #000;
+            padding: 0 3mm;
+            height: 8mm;
+            box-sizing: border-box;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            max-width: 35mm; /* 避免過長文字擠出版面 */
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
         @media print {
             @page {
                 size: 87.5mm 60.7mm;
@@ -284,7 +300,7 @@
     </div>
 
     <div class="input-group">
-        <label>出貨日期 (計算太陽日)</label>
+        <label>選擇日期 (計算太陽日)</label>
         <input type="date" id="arrivalDate" onchange="updateContent()">
         <span id="panelDateHint" class="date-display-text"></span>
     </div>
@@ -292,6 +308,11 @@
     <div class="checkbox-group" onclick="toggleGift(event)">
         <input type="checkbox" id="inputIsGift" onchange="updateContent()">
         <label style="margin-bottom: 0; cursor: pointer;">標記為贈品</label>
+    </div>
+
+    <div class="input-group">
+        <label>自訂店家名 (選填)</label>
+        <input type="text" id="inputStoreName" placeholder="例如：某某分店..." oninput="updateContent()">
     </div>
 
     <button onclick="window.print()">執行列印</button>
@@ -315,11 +336,12 @@
                 <span id="displayName"></span>
             </div>
             
-            <!-- 底部欄位 -->
-            <div class="field content-aligned" id="solarDay" style="top: 48mm;"></div>
-            <div class="field" id="miaTag" style="top: 48mm;">Mia C'bon</div>
-            <div class="field" id="giftBox" style="top: 48mm;">
-                <span>贈品</span>
+            <!-- 底部欄位容器 (使用 Flexbox 自動排序，不再依賴絕對數值推移) -->
+            <div class="field content-aligned" style="top: 48mm; display: flex; gap: 2mm; align-items: center; height: 8mm;">
+                <div id="solarDay"></div>
+                <div id="miaTag">Mia C'bon</div>
+                <div id="giftBox"><span>贈品</span></div>
+                <div id="storeBox"><span id="storeNameDisplay"></span></div>
             </div>
         </div>
     </div>
@@ -368,8 +390,7 @@
     let currentDefaultCount = null;
     let currentDefaultName = null;
 
-    // 計算並重設日期為明天的主要函式
-    function resetDateToTomorrow() {
+    window.onload = function() {
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -379,30 +400,10 @@
         const day = String(tomorrow.getDate()).padStart(2, '0');
         const dateString = `${year}-${month}-${day}`;
         
-        const dateInput = document.getElementById('arrivalDate');
-        // 如果輸入框目前沒值，或者數值已經跟最新的明天日期不同，才進行重設（避免影響正在手動挑選日期的使用者）
-        if (!dateInput.value || dateInput.value !== dateString) {
-            dateInput.value = dateString;
-            updateContent();
-        }
-    }
-
-    // 1. 初次載入網頁時執行
-    window.onload = function() {
-        resetDateToTomorrow();
+        document.getElementById('arrivalDate').value = dateString;
         updateItemOptions();
         updateContent();
     };
-
-    // 2. 當使用者切換分頁重新回到此頁面，或從鎖定螢幕喚醒時自動更新
-    document.addEventListener("visibilitychange", function() {
-        if (document.visibilityState === 'visible') {
-            resetDateToTomorrow();
-        }
-    });
-
-    // 3. 備用保險：如果頁面不小心一直開著，每隔 10 分鐘在背景檢查一次是否跨日
-    setInterval(resetDateToTomorrow, 600000);
 
     function updateItemOptions() {
         const warehouse = document.getElementById('warehouseSelect').value;
@@ -458,6 +459,7 @@
         const countInputVal = document.getElementById('inputCount').value;
         const dateVal = document.getElementById('arrivalDate').value;
         const isGift = document.getElementById('inputIsGift').checked;
+        const storeNameVal = document.getElementById('inputStoreName').value.trim();
         
         const nameSpan = document.getElementById('displayName');
         const nameContainer = document.getElementById('displayNameContainer');
@@ -465,10 +467,8 @@
         const panelHint = document.getElementById('panelDateHint');
         const miaTag = document.getElementById('miaTag');
         const giftBox = document.getElementById('giftBox');
-
-        // 從 CSS 讀取邊距數值 (12mm)
-        const rootStyle = getComputedStyle(document.documentElement);
-        const paddingX = parseFloat(rootStyle.getPropertyValue('--content-padding-x')) || 12;
+        const storeBox = document.getElementById('storeBox');
+        const storeNameDisplay = document.getElementById('storeNameDisplay');
         
         // 樣式檢測 (是否修改過預設值)
         const nameInputEl = document.getElementById('inputName');
@@ -485,7 +485,7 @@
             countInputEl.classList.remove('is-modified');
         }
 
-        // 太陽日計算與顯示
+        // 太陽日計算
         if (dateVal) {
             const parts = dateVal.split('-');
             const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -502,17 +502,22 @@
             solarDayDiv.style.visibility = 'hidden';
         }
 
-        // 底部元件動態位移：根據 12mm 邊界調整
+        // 底部元件動態位移：因已改用 Flexbox 排列，只要切換 display 即可自動對齊
         if (warehouse === 'mia') {
             miaTag.style.display = 'flex';
-            miaTag.style.left = (paddingX + 16) + 'mm'; // 太陽日寬度 14mm + 間距 2mm
-            giftBox.style.left = (paddingX + 46) + 'mm'; // 再往右推
         } else {
             miaTag.style.display = 'none';
-            giftBox.style.left = (paddingX + 16) + 'mm'; // 緊鄰太陽日
         }
 
         giftBox.style.display = isGift ? 'flex' : 'none';
+
+        // 自訂店家名稱顯示邏輯
+        if (storeNameVal) {
+            storeNameDisplay.innerText = storeNameVal;
+            storeBox.style.display = 'flex';
+        } else {
+            storeBox.style.display = 'none';
+        }
 
         // 品名自動縮放與置中
         nameSpan.innerText = nameInput || "";
