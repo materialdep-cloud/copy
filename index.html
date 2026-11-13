@@ -11,7 +11,7 @@
             --label-height: 60.7mm;
             --sidebar-width: 350px;
             
-            /* 左右留邊調整為 12mm */
+            /* 左右留邊統一為 12mm */
             --content-padding-x: 12mm;
             --max-content-width: calc(var(--label-width) - (var(--content-padding-x) * 2)); 
         }
@@ -46,6 +46,14 @@
         }
 
         .input-group {
+            margin-bottom: 18px;
+        }
+
+        .category-box {
+            background: #eef6fc;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #b6d4fe;
             margin-bottom: 20px;
         }
 
@@ -53,7 +61,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             cursor: pointer;
             padding: 10px;
             background: #f8f9fa;
@@ -70,18 +78,38 @@
         label {
             display: block;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 0.95rem;
         }
 
         select, input {
             width: 100%;
-            padding: 10px;
+            padding: 9px 10px;
             border: 1px solid #ced4da;
             border-radius: 4px;
             font-size: 1rem;
             box-sizing: border-box;
             transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .weight-custom-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .weight-custom-row input {
+            width: 60%;
+        }
+
+        .weight-custom-row select {
+            width: 40%;
+        }
+
+        .weight-hint {
+            display: block;
+            font-size: 0.82rem;
+            color: #6c757d;
+            margin-top: 4px;
         }
 
         .is-modified {
@@ -94,8 +122,8 @@
             margin-top: 5px;
             color: #2c3e50;
             font-weight: bold;
-            font-size: 1.1rem;
-            padding: 5px 0;
+            font-size: 1.05rem;
+            padding: 3px 0;
         }
 
         button {
@@ -145,6 +173,7 @@
             box-sizing: border-box;
         }
 
+        /* ================= 康達勝通模式樣式 (完全保留原位置) ================= */
         .field {
             position: absolute;
             font-size: 11pt;
@@ -153,13 +182,11 @@
             white-space: nowrap;
         }
 
-        /* 內容區域限制在左右指定留白內 */
         .content-aligned {
             left: var(--content-padding-x);
             width: var(--max-content-width);
         }
 
-        /* 品項名稱容器 - 設置為水平置中 */
         #displayNameContainer {
             top: 30mm;
             height: 15mm;
@@ -178,14 +205,12 @@
             line-height: 1;
         }
 
-        /* 入數值位置相對邊界計算 */
         #displayCount {
             font-weight: bold;
             font-size: 13pt;
             left: calc(var(--content-padding-x) + 16mm);
         }
 
-        /* 太陽日外框 */
         #solarDay {
             font-size: 18pt;
             font-weight: bold;
@@ -201,7 +226,6 @@
             align-items: center;
         }
 
-        /* 底部動態欄位 */
         #miaTag {
             font-size: 16pt;
             font-weight: bold;
@@ -222,7 +246,6 @@
             align-items: center;
         }
 
-        /* 店家名稱框樣式 */
         #storeBox {
             font-size: 14pt;
             font-weight: bold;
@@ -233,9 +256,108 @@
             display: none; 
             justify-content: center;
             align-items: center;
-            max-width: 35mm; /* 避免過長文字擠出版面 */
+            max-width: 35mm;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        /* ================= 農場模式樣式 (左右留白 12mm，品項基準 36pt，重量 22pt) ================= */
+        #farm-layout {
+            width: 100%;
+            height: 100%;
+            padding: 4.5mm var(--content-padding-x) 4mm var(--content-padding-x);
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #000;
+        }
+
+        .farm-date {
+            font-size: 36pt;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.05;
+            letter-spacing: 1px;
+        }
+
+        .farm-item-container {
+            width: 100%;
+            height: 16mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #farmDisplayItem {
+            font-size: 36pt;
+            font-weight: bold;
+            white-space: nowrap;
+            line-height: 1.15;
+        }
+
+        .farm-bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            width: 100%;
+            gap: 6mm;
+            padding-bottom: 1.5mm;
+        }
+
+        #farmDisplayWeight {
+            font-size: 22pt;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1.3;
+        }
+
+        #farmDisplayName {
+            font-size: 17pt;
+            font-weight: bold;
+            white-space: nowrap;
+            text-align: right;
+            line-height: 1.3;
+            margin-left: auto;
+        }
+
+        /* ================= 自用模式樣式 (左右留白 12mm，日期 + 中間大字) ================= */
+        #self-layout {
+            width: 100%;
+            height: 100%;
+            padding: 6mm var(--content-padding-x) 8mm var(--content-padding-x);
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: #000;
+        }
+
+        .self-date {
+            font-size: 36pt;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.05;
+            letter-spacing: 1px;
+        }
+
+        .self-item-container {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #selfDisplayItem {
+            font-size: 36pt;
+            font-weight: bold;
+            white-space: nowrap;
+            line-height: 1.15;
         }
 
         @media print {
@@ -273,46 +395,124 @@
 <div id="sidebar">
     <h2>標籤列印系統</h2>
 
-    <div class="input-group">
-        <label>1. 選擇倉別</label>
-        <select id="warehouseSelect" onchange="updateItemOptions()">
-            <option value="dayuan">大園倉</option>
-            <option value="xiluo">西螺倉</option>
-            <option value="mia">MIA 倉</option>
-            <option value="others">其他倉</option>
-        </select>
-    </div>
-    
-    <div class="input-group">
-        <label>2. 快速選擇品項</label>
-        <select id="itemSelect" onchange="syncFromSelect()">
+    <!-- 頂層分類選擇 -->
+    <div class="category-box">
+        <label style="color: #0d47a1;">1. 選擇系統分類</label>
+        <select id="mainCategorySelect" onchange="switchMainCategory()">
+            <option value="kangda">康達勝通</option>
+            <option value="farm">農場</option>
+            <option value="self">自用</option>
         </select>
     </div>
 
-    <div class="input-group">
-        <label>單品名稱</label>
-        <input type="text" id="inputName" placeholder="請輸入單品名稱" oninput="updateContent()">
+    <!-- ================= 康達勝通控制區 ================= -->
+    <div id="kangdaControls">
+        <div class="input-group">
+            <label>2. 選擇倉別</label>
+            <select id="warehouseSelect" onchange="updateItemOptions()">
+                <option value="dayuan">大園倉</option>
+                <option value="xiluo">西螺倉</option>
+                <option value="mia">MIA 倉</option>
+                <option value="others">其他倉</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label>3. 快速選擇品項</label>
+            <select id="itemSelect" onchange="syncFromSelect()">
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>單品名稱</label>
+            <input type="text" id="inputName" placeholder="請輸入單品名稱" oninput="updateContent()">
+        </div>
+
+        <div class="input-group">
+            <label id="labelCount">箱入數</label>
+            <input type="number" id="inputCount" placeholder="請輸入數量" oninput="updateContent()">
+        </div>
+
+        <div class="input-group">
+            <label>選擇日期 (計算太陽日)</label>
+            <input type="date" id="arrivalDate" onchange="updateContent()">
+            <span id="panelDateHint" class="date-display-text"></span>
+        </div>
+
+        <div class="checkbox-group" onclick="toggleGift(event)">
+            <input type="checkbox" id="inputIsGift" onchange="updateContent()">
+            <label style="margin-bottom: 0; cursor: pointer;">標記為贈品</label>
+        </div>
+
+        <div class="input-group">
+            <label>自訂店家名 (選填)</label>
+            <input type="text" id="inputStoreName" placeholder="例如：某某分店..." oninput="updateContent()">
+        </div>
     </div>
 
-    <div class="input-group">
-        <label id="labelCount">箱入數</label>
-        <input type="number" id="inputCount" placeholder="請輸入數量" oninput="updateContent()">
+    <!-- ================= 農場控制區 ================= -->
+    <div id="farmControls" style="display: none;">
+        <div class="input-group">
+            <label>2. 選擇農場 (產品：農民)</label>
+            <select id="farmSelect" onchange="updateFarmOptions()">
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>農場名稱 (列印顯示，可手動微調)</label>
+            <input type="text" id="inputFarmName" placeholder="請輸入農場名稱" oninput="updateContent()">
+        </div>
+
+        <div class="input-group">
+            <label>3. 快速選擇品項</label>
+            <select id="farmItemSelect" onchange="syncFarmItem()">
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>品項名稱</label>
+            <input type="text" id="inputFarmItem" placeholder="請輸入品項名稱" oninput="updateContent()">
+        </div>
+
+        <div class="input-group" id="farmWeightGroup">
+            <label>重量 / 數量 (已自動帶入，亦可直接修改)</label>
+            <div class="weight-custom-row">
+                <input type="text" id="inputFarmWeightVal" value="20" placeholder="數量 (留白則不顯示)" oninput="updateContent()">
+                <select id="inputFarmWeightUnit" onchange="updateContent()">
+                    <option value="台斤">台斤</option>
+                    <option value="kg">kg</option>
+                    <option value="把">把</option>
+                    <option value="">(無單位)</option>
+                </select>
+            </div>
+            <span class="weight-hint">可直接修改數字或單位，留白則標籤不顯示重量</span>
+        </div>
+
+        <div class="input-group">
+            <label>選擇日期 (預設瀏覽器今天)</label>
+            <input type="date" id="farmDate" onchange="updateContent()">
+            <span id="farmDateHint" class="date-display-text"></span>
+        </div>
     </div>
 
-    <div class="input-group">
-        <label>選擇日期 (計算太陽日)</label>
-        <input type="date" id="arrivalDate" onchange="updateContent()">
-        <span id="panelDateHint" class="date-display-text"></span>
-    </div>
+    <!-- ================= 自用控制區 ================= -->
+    <div id="selfControls" style="display: none;">
+        <div class="input-group">
+            <label>2. 快速選擇項目</label>
+            <select id="selfItemSelect" onchange="syncSelfItem()">
+            </select>
+        </div>
 
-    <div class="checkbox-group" onclick="toggleGift(event)">
-        <input type="checkbox" id="inputIsGift" onchange="updateContent()">
-        <label style="margin-bottom: 0; cursor: pointer;">標記為贈品</label>
-    </div>
+        <div class="input-group">
+            <label>顯示文字 (可手動修改)</label>
+            <input type="text" id="inputSelfItem" placeholder="請輸入顯示文字" oninput="updateContent()">
+        </div>
 
-    <div class="input-group">
-        <label>自訂店家名 (選填)</label>
-        <input type="text" id="inputStoreName" placeholder="例如：某某分店..." oninput="updateContent()">
+        <div class="input-group">
+            <label>選擇日期 (預設瀏覽器今天)</label>
+            <input type="date" id="selfDate" onchange="updateContent()">
+            <span id="selfDateHint" class="date-display-text"></span>
+        </div>
     </div>
 
     <button onclick="window.print()">執行列印</button>
@@ -321,33 +521,59 @@
 <div id="preview-area">
     <div id="label-container">
         <div class="label-page" id="label">
-            <!-- 固定欄位標頭 -->
-            <div class="field content-aligned" style="top: 3.3mm;">到店日: </div>
-            <div class="field content-aligned" style="top: 8.7mm;">供應商編號: 22H907</div>
-            <div class="field content-aligned" style="top: 14mm;">供應商名稱: 綠園生活有限公司</div>
-            <div class="field content-aligned" style="top: 19.4mm;">箱入數:</div>
-            <div class="field content-aligned" style="top: 24.8mm;">單品名稱:</div>
+            
+            <!-- ================= 康達勝通預覽版面 ================= -->
+            <div id="kangda-layout">
+                <!-- 固定欄位標頭 -->
+                <div class="field content-aligned" style="top: 3.3mm;">到店日: </div>
+                <div class="field content-aligned" style="top: 8.7mm;">供應商編號: 22H907</div>
+                <div class="field content-aligned" style="top: 14mm;">供應商名稱: 綠園生活有限公司</div>
+                <div class="field content-aligned" style="top: 19.4mm;">箱入數:</div>
+                <div class="field content-aligned" style="top: 24.8mm;">單品名稱:</div>
 
-            <!-- 箱入數值 -->
-            <div class="field" id="displayCount" style="top: 19.4mm;"></div>
-            
-            <!-- 品名容器 -->
-            <div id="displayNameContainer" class="field content-aligned">
-                <span id="displayName"></span>
+                <!-- 箱入數值 -->
+                <div class="field" id="displayCount" style="top: 19.4mm;"></div>
+                
+                <!-- 品名容器 -->
+                <div id="displayNameContainer" class="field content-aligned">
+                    <span id="displayName"></span>
+                </div>
+                
+                <!-- 底部欄位容器 -->
+                <div class="field content-aligned" style="top: 48mm; display: flex; gap: 2mm; align-items: center; height: 8mm;">
+                    <div id="solarDay"></div>
+                    <div id="miaTag">Mia C'bon</div>
+                    <div id="giftBox"><span>贈品</span></div>
+                    <div id="storeBox"><span id="storeNameDisplay"></span></div>
+                </div>
             </div>
-            
-            <!-- 底部欄位容器 (使用 Flexbox 自動排序，不再依賴絕對數值推移) -->
-            <div class="field content-aligned" style="top: 48mm; display: flex; gap: 2mm; align-items: center; height: 8mm;">
-                <div id="solarDay"></div>
-                <div id="miaTag">Mia C'bon</div>
-                <div id="giftBox"><span>贈品</span></div>
-                <div id="storeBox"><span id="storeNameDisplay"></span></div>
+
+            <!-- ================= 農場預覽版面 ================= -->
+            <div id="farm-layout">
+                <div class="farm-date" id="farmDisplayDate">11/13</div>
+                <div class="farm-item-container" id="farmItemContainer">
+                    <span id="farmDisplayItem">生鮮蒜仁(大仁)</span>
+                </div>
+                <div class="farm-bottom-row" id="farmBottomRow">
+                    <span id="farmDisplayWeight">20台斤</span>
+                    <span id="farmDisplayName">福利蔥蒜號</span>
+                </div>
             </div>
+
+            <!-- ================= 自用預覽版面 ================= -->
+            <div id="self-layout">
+                <div class="self-date" id="selfDisplayDate">11/13</div>
+                <div class="self-item-container" id="selfItemContainer">
+                    <span id="selfDisplayItem">特選/盒菇/日燦</span>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script>
+    // 康達勝通資料庫 (完全保留原資料)
     const itemDatabase = {
         dayuan: [
             { name: "有機特級杏鮑菇1kg", count: 20, display: "有機特級杏鮑菇1kg (20入)" },
@@ -387,6 +613,121 @@
         others: []
     };
 
+    // 農場資料庫
+    const farmDatabase = {
+        fuli: {
+            label: "福利蔥蒜號",
+            name: "福利蔥蒜號",
+            items: [
+                { name: "生鮮蒜仁", weightVal: "20", weightUnit: "台斤" },
+                { name: "生鮮蒜仁", weightVal: "40", weightUnit: "台斤" },
+                { name: "生鮮蒜仁(大仁)", weightVal: "20", weightUnit: "台斤" },
+                { name: "生鮮蒜仁(大仁)", weightVal: "40", weightUnit: "台斤" },
+                { name: "特價品生鮮蒜仁", weightVal: "20", weightUnit: "台斤" },
+                { name: "特價品生鮮蒜仁", weightVal: "40", weightUnit: "台斤" }
+            ]
+        },
+        lin_chenghan: {
+            label: "櫛瓜：林承翰",
+            name: "林承翰",
+            items: [
+                { name: "履歷櫛瓜M", weightVal: "10", weightUnit: "台斤" },
+                { name: "履歷櫛瓜S", weightVal: "10", weightUnit: "台斤" },
+                { name: "履歷櫛瓜B", weightVal: "10", weightUnit: "台斤" }
+            ]
+        },
+        xu_shengfa: {
+            label: "櫛瓜：許勝發",
+            name: "許勝發",
+            items: [
+                { name: "履歷櫛瓜", weightVal: "10", weightUnit: "台斤" }
+            ]
+        },
+        kebulan: {
+            label: "科布藍",
+            name: "科布藍",
+            items: [
+                { name: "履歷牛番茄L", weightVal: "15", weightUnit: "kg" },
+                { name: "履歷牛番茄M", weightVal: "15", weightUnit: "kg" },
+                { name: "履歷牛番茄S", weightVal: "15", weightUnit: "kg" },
+                { name: "牛番茄L", weightVal: "15", weightUnit: "kg" },
+                { name: "牛番茄M", weightVal: "15", weightUnit: "kg" },
+                { name: "牛番茄S", weightVal: "15", weightUnit: "kg" },
+                { name: "小黃瓜", weightVal: "15", weightUnit: "kg" },
+                { name: "小黃瓜C", weightVal: "20", weightUnit: "台斤" }
+            ]
+        },
+        heti: {
+            label: "年均價：禾䔶",
+            name: "禾䔶",
+            items: [
+                { name: "年均價B", weightVal: "", weightUnit: "" },
+                { name: "年均價C", weightVal: "", weightUnit: "" }
+            ]
+        },
+        zimao: {
+            label: "青蔥：子茂",
+            name: "子茂",
+            items: [
+                { name: "青蔥1kg", weightVal: "15", weightUnit: "把" }
+            ]
+        },
+        shangjing: {
+            label: "青蔥：尚景",
+            name: "尚景",
+            items: [
+                { name: "青蔥3kg", weightVal: "5", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "6", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "7", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "8", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "9", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "10", weightUnit: "把" }
+            ]
+        },
+        chen_yuyang: {
+            label: "生菜：陳禹仰",
+            name: "陳禹仰",
+            items: [
+                { name: "羽衣甘藍", weightVal: "5", weightUnit: "kg" }
+            ]
+        },
+        cai_junwen: {
+            label: "生菜：蔡俊文",
+            name: "蔡俊文",
+            items: [
+                { name: "巴西里［捲葉］", weightVal: "15", weightUnit: "kg" }
+            ]
+        },
+        zhuo_yongjia: {
+            label: "生菜：卓永加",
+            name: "卓永加",
+            items: [
+                { name: "波士頓奶油生菜［水耕］", weightVal: "10", weightUnit: "kg" }
+            ]
+        },
+        other_farm: {
+            label: "-- 手動輸入其他農場 --",
+            name: "",
+            items: []
+        }
+    };
+
+    // 自用資料庫
+    const selfItemsDatabase = [
+        "特選/盒菇/日燦",
+        "特選/生展/王品",
+        "特選/開源社",
+        "雲雀/大盤大",
+        "大買家",
+        "去蒂",
+        "王品中",
+        "王品北",
+        "子茂",
+        "艸田",
+        "中原",
+        "素茵"
+    ];
+
     let currentDefaultCount = null;
     let currentDefaultName = null;
 
@@ -395,16 +736,51 @@
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
         
-        const year = tomorrow.getFullYear();
-        const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const day = String(tomorrow.getDate()).padStart(2, '0');
-        const dateString = `${year}-${month}-${day}`;
-        
-        document.getElementById('arrivalDate').value = dateString;
+        // 康達勝通預設明天
+        const tYear = tomorrow.getFullYear();
+        const tMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const tDay = String(tomorrow.getDate()).padStart(2, '0');
+        document.getElementById('arrivalDate').value = `${tYear}-${tMonth}-${tDay}`;
+
+        // 農場與自用預設瀏覽器今天
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+        document.getElementById('farmDate').value = todayStr;
+        document.getElementById('selfDate').value = todayStr;
+
+        // 初始化選單
+        initFarmSelect();
+        initSelfSelect();
         updateItemOptions();
-        updateContent();
+        updateFarmOptions();
+        switchMainCategory();
     };
 
+    // 切換頂層大分類 (康達勝通 vs 農場 vs 自用)
+    function switchMainCategory() {
+        const category = document.getElementById('mainCategorySelect').value;
+        const kangdaControls = document.getElementById('kangdaControls');
+        const farmControls = document.getElementById('farmControls');
+        const selfControls = document.getElementById('selfControls');
+
+        const kangdaLayout = document.getElementById('kangda-layout');
+        const farmLayout = document.getElementById('farm-layout');
+        const selfLayout = document.getElementById('self-layout');
+
+        kangdaControls.style.display = (category === 'kangda') ? 'block' : 'none';
+        farmControls.style.display = (category === 'farm') ? 'block' : 'none';
+        selfControls.style.display = (category === 'self') ? 'block' : 'none';
+
+        kangdaLayout.style.display = (category === 'kangda') ? 'block' : 'none';
+        farmLayout.style.display = (category === 'farm') ? 'flex' : 'none';
+        selfLayout.style.display = (category === 'self') ? 'flex' : 'none';
+
+        updateContent();
+    }
+
+    // ================= 康達勝通邏輯 =================
     function updateItemOptions() {
         const warehouse = document.getElementById('warehouseSelect').value;
         const itemSelect = document.getElementById('itemSelect');
@@ -453,85 +829,259 @@
         updateContent();
     }
 
+    // ================= 農場邏輯 =================
+    function initFarmSelect() {
+        const farmSelect = document.getElementById('farmSelect');
+        farmSelect.innerHTML = '';
+        for (const [key, data] of Object.entries(farmDatabase)) {
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = data.label || data.name || "-- 手動輸入其他農場 --";
+            farmSelect.appendChild(opt);
+        }
+    }
+
+    function setWeightFieldValues(val, unit) {
+        document.getElementById('inputFarmWeightVal').value = val;
+        document.getElementById('inputFarmWeightUnit').value = unit;
+    }
+
+    function updateFarmOptions() {
+        const farmKey = document.getElementById('farmSelect').value;
+        const farmData = farmDatabase[farmKey];
+        const farmItemSelect = document.getElementById('farmItemSelect');
+        const inputFarmName = document.getElementById('inputFarmName');
+        const inputFarmItem = document.getElementById('inputFarmItem');
+
+        inputFarmName.value = farmData ? farmData.name : "";
+        farmItemSelect.innerHTML = '<option value="">-- 手動輸入品項 --</option>';
+
+        if (farmData && farmData.items.length > 0) {
+            farmData.items.forEach((item, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                const weightLabel = item.weightVal ? ` (${item.weightVal}${item.weightUnit})` : " (無重量)";
+                opt.textContent = `${item.name}${weightLabel}`;
+                farmItemSelect.appendChild(opt);
+            });
+            // 預設帶入第一項品名與對應重量
+            farmItemSelect.value = "0";
+            const firstItem = farmData.items[0];
+            inputFarmItem.value = firstItem.name;
+            setWeightFieldValues(firstItem.weightVal, firstItem.weightUnit);
+        } else {
+            inputFarmItem.value = "";
+            setWeightFieldValues("", "台斤");
+        }
+        updateContent();
+    }
+
+    function syncFarmItem() {
+        const farmKey = document.getElementById('farmSelect').value;
+        const farmData = farmDatabase[farmKey];
+        const idx = document.getElementById('farmItemSelect').value;
+        const inputFarmItem = document.getElementById('inputFarmItem');
+
+        if (idx !== "" && farmData && farmData.items[idx]) {
+            const selectedItem = farmData.items[idx];
+            inputFarmItem.value = selectedItem.name;
+            setWeightFieldValues(selectedItem.weightVal, selectedItem.weightUnit);
+        } else {
+            inputFarmItem.value = "";
+            setWeightFieldValues("", "台斤");
+        }
+        updateContent();
+    }
+
+    // ================= 自用邏輯 =================
+    function initSelfSelect() {
+        const selfItemSelect = document.getElementById('selfItemSelect');
+        selfItemSelect.innerHTML = '<option value="">-- 手動輸入文字 --</option>';
+        selfItemsDatabase.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item;
+            opt.textContent = item;
+            selfItemSelect.appendChild(opt);
+        });
+        // 預設選取第一項
+        if (selfItemsDatabase.length > 0) {
+            selfItemSelect.value = selfItemsDatabase[0];
+            document.getElementById('inputSelfItem').value = selfItemsDatabase[0];
+        }
+    }
+
+    function syncSelfItem() {
+        const val = document.getElementById('selfItemSelect').value;
+        document.getElementById('inputSelfItem').value = val;
+        updateContent();
+    }
+
+    // ================= 畫面更新總控 =================
     function updateContent() {
-        const warehouse = document.getElementById('warehouseSelect').value;
-        const nameInput = document.getElementById('inputName').value;
-        const countInputVal = document.getElementById('inputCount').value;
-        const dateVal = document.getElementById('arrivalDate').value;
-        const isGift = document.getElementById('inputIsGift').checked;
-        const storeNameVal = document.getElementById('inputStoreName').value.trim();
-        
-        const nameSpan = document.getElementById('displayName');
-        const nameContainer = document.getElementById('displayNameContainer');
-        const solarDayDiv = document.getElementById('solarDay');
-        const panelHint = document.getElementById('panelDateHint');
-        const miaTag = document.getElementById('miaTag');
-        const giftBox = document.getElementById('giftBox');
-        const storeBox = document.getElementById('storeBox');
-        const storeNameDisplay = document.getElementById('storeNameDisplay');
-        
-        // 樣式檢測 (是否修改過預設值)
-        const nameInputEl = document.getElementById('inputName');
-        if (currentDefaultName !== null && nameInput !== currentDefaultName) {
-            nameInputEl.classList.add('is-modified');
+        const category = document.getElementById('mainCategorySelect').value;
+        const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+        if (category === 'kangda') {
+            const warehouse = document.getElementById('warehouseSelect').value;
+            const nameInput = document.getElementById('inputName').value;
+            const countInputVal = document.getElementById('inputCount').value;
+            const dateVal = document.getElementById('arrivalDate').value;
+            const isGift = document.getElementById('inputIsGift').checked;
+            const storeNameVal = document.getElementById('inputStoreName').value.trim();
+            
+            const nameSpan = document.getElementById('displayName');
+            const nameContainer = document.getElementById('displayNameContainer');
+            const solarDayDiv = document.getElementById('solarDay');
+            const panelHint = document.getElementById('panelDateHint');
+            const miaTag = document.getElementById('miaTag');
+            const giftBox = document.getElementById('giftBox');
+            const storeBox = document.getElementById('storeBox');
+            const storeNameDisplay = document.getElementById('storeNameDisplay');
+            
+            // 樣式檢測 (是否修改過預設值)
+            const nameInputEl = document.getElementById('inputName');
+            if (currentDefaultName !== null && nameInput !== currentDefaultName) {
+                nameInputEl.classList.add('is-modified');
+            } else {
+                nameInputEl.classList.remove('is-modified');
+            }
+
+            const countInputEl = document.getElementById('inputCount');
+            if (currentDefaultCount !== null && countInputVal !== currentDefaultCount) {
+                countInputEl.classList.add('is-modified');
+            } else {
+                countInputEl.classList.remove('is-modified');
+            }
+
+            // 太陽日計算
+            if (dateVal) {
+                const parts = dateVal.split('-');
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                panelHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
+                solarDayDiv.innerText = calculateSolarDay(d);
+                solarDayDiv.style.visibility = 'visible';
+            } else {
+                panelHint.innerText = "";
+                solarDayDiv.innerText = "";
+                solarDayDiv.style.visibility = 'hidden';
+            }
+
+            // 底部元件動態顯示
+            miaTag.style.display = (warehouse === 'mia') ? 'flex' : 'none';
+            giftBox.style.display = isGift ? 'flex' : 'none';
+
+            if (storeNameVal) {
+                storeNameDisplay.innerText = storeNameVal;
+                storeBox.style.display = 'flex';
+            } else {
+                storeBox.style.display = 'none';
+            }
+
+            // 品名自動縮放與置中
+            nameSpan.innerText = nameInput || "";
+            nameSpan.style.fontSize = "24pt"; 
+            const maxWidth = nameContainer.offsetWidth;
+            let currentFontSize = 24;
+            while (nameSpan.offsetWidth > maxWidth && currentFontSize > 6) {
+                currentFontSize -= 0.5;
+                nameSpan.style.fontSize = currentFontSize + "pt";
+            }
+            
+            document.getElementById('displayCount').innerText = countInputVal ? countInputVal + " 入" : "";
+
+        } else if (category === 'farm') {
+            // 農場模式畫面更新
+            const farmName = document.getElementById('inputFarmName').value.trim();
+            const farmItem = document.getElementById('inputFarmItem').value;
+            const farmWeightVal = document.getElementById('inputFarmWeightVal').value.trim();
+            const farmWeightUnit = document.getElementById('inputFarmWeightUnit').value;
+            const farmDateVal = document.getElementById('farmDate').value;
+
+            const farmDisplayDate = document.getElementById('farmDisplayDate');
+            const farmDateHint = document.getElementById('farmDateHint');
+            const farmDisplayItem = document.getElementById('farmDisplayItem');
+            const farmItemContainer = document.getElementById('farmItemContainer');
+            const farmDisplayWeight = document.getElementById('farmDisplayWeight');
+            const farmDisplayName = document.getElementById('farmDisplayName');
+            const farmBottomRow = document.getElementById('farmBottomRow');
+
+            // 日期格式化 (MM/DD)
+            if (farmDateVal) {
+                const parts = farmDateVal.split('-');
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                farmDateHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
+                farmDisplayDate.innerText = `${m}/${day}`;
+            } else {
+                farmDateHint.innerText = "";
+                farmDisplayDate.innerText = "";
+            }
+
+            // 品項名稱基準 36pt，超過 12mm 安全邊界自動縮小
+            farmDisplayItem.innerText = farmItem || "";
+            farmDisplayItem.style.fontSize = "36pt";
+            const maxFarmWidth = farmItemContainer.offsetWidth;
+            let farmFontSize = 36;
+            while (farmDisplayItem.offsetWidth > maxFarmWidth && farmFontSize > 6) {
+                farmFontSize -= 0.5;
+                farmDisplayItem.style.fontSize = farmFontSize + "pt";
+            }
+
+            // 重量 22pt、農場名稱 17pt (超過 12mm 安全邊界時維持比例縮小)
+            farmDisplayWeight.innerText = farmWeightVal ? `${farmWeightVal}${farmWeightUnit}` : "";
+            farmDisplayName.innerText = farmName || "";
+
+            let weightFontSize = 22;
+            let nameFontSize = 17;
+            farmDisplayWeight.style.fontSize = weightFontSize + "pt";
+            farmDisplayName.style.fontSize = nameFontSize + "pt";
+
+            while (farmBottomRow.scrollWidth > farmBottomRow.offsetWidth && nameFontSize > 6) {
+                weightFontSize -= 0.5;
+                nameFontSize -= 0.5;
+                farmDisplayWeight.style.fontSize = weightFontSize + "pt";
+                farmDisplayName.style.fontSize = nameFontSize + "pt";
+            }
+
         } else {
-            nameInputEl.classList.remove('is-modified');
-        }
+            // 自用模式畫面更新
+            const selfItem = document.getElementById('inputSelfItem').value;
+            const selfDateVal = document.getElementById('selfDate').value;
 
-        const countInputEl = document.getElementById('inputCount');
-        if (currentDefaultCount !== null && countInputVal !== currentDefaultCount) {
-            countInputEl.classList.add('is-modified');
-        } else {
-            countInputEl.classList.remove('is-modified');
-        }
+            const selfDisplayDate = document.getElementById('selfDisplayDate');
+            const selfDateHint = document.getElementById('selfDateHint');
+            const selfDisplayItem = document.getElementById('selfDisplayItem');
+            const selfItemContainer = document.getElementById('selfItemContainer');
 
-        // 太陽日計算
-        if (dateVal) {
-            const parts = dateVal.split('-');
-            const d = new Date(parts[0], parts[1] - 1, parts[2]);
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            const weekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-            panelHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
-            solarDayDiv.innerText = calculateSolarDay(d);
-            solarDayDiv.style.visibility = 'visible';
-        } else {
-            panelHint.innerText = "";
-            solarDayDiv.innerText = "";
-            solarDayDiv.style.visibility = 'hidden';
-        }
+            // 日期格式化 (MM/DD)
+            if (selfDateVal) {
+                const parts = selfDateVal.split('-');
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                selfDateHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
+                selfDisplayDate.innerText = `${m}/${day}`;
+            } else {
+                selfDateHint.innerText = "";
+                selfDisplayDate.innerText = "";
+            }
 
-        // 底部元件動態位移：因已改用 Flexbox 排列，只要切換 display 即可自動對齊
-        if (warehouse === 'mia') {
-            miaTag.style.display = 'flex';
-        } else {
-            miaTag.style.display = 'none';
+            // 中間大字基準 36pt，超過左右 12mm 安全邊界自動縮小
+            selfDisplayItem.innerText = selfItem || "";
+            selfDisplayItem.style.fontSize = "36pt";
+            const maxSelfWidth = selfItemContainer.offsetWidth;
+            let selfFontSize = 36;
+            while (selfDisplayItem.offsetWidth > maxSelfWidth && selfFontSize > 6) {
+                selfFontSize -= 0.5;
+                selfDisplayItem.style.fontSize = selfFontSize + "pt";
+            }
         }
-
-        giftBox.style.display = isGift ? 'flex' : 'none';
-
-        // 自訂店家名稱顯示邏輯
-        if (storeNameVal) {
-            storeNameDisplay.innerText = storeNameVal;
-            storeBox.style.display = 'flex';
-        } else {
-            storeBox.style.display = 'none';
-        }
-
-        // 品名自動縮放與置中
-        nameSpan.innerText = nameInput || "";
-        nameSpan.style.fontSize = "24pt"; 
-        
-        const maxWidth = nameContainer.offsetWidth;
-        let currentFontSize = 24;
-        
-        while (nameSpan.offsetWidth > maxWidth && currentFontSize > 6) {
-            currentFontSize -= 0.5;
-            nameSpan.style.fontSize = currentFontSize + "pt";
-        }
-        
-        document.getElementById('displayCount').innerText = countInputVal ? countInputVal + " 入" : "";
     }
 
     function calculateSolarDay(date) {
