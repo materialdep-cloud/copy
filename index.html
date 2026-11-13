@@ -758,25 +758,80 @@
 
     let currentDefaultCount = null;
     let currentDefaultName = null;
+    let initialTaipeiDateStr = null;
+
+    // 取得精準台灣時間 (Asia/Taipei) 元件
+    function getTaipeiTimeParts() {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Taipei',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        const parts = {};
+        formatter.formatToParts(now).forEach(({ type, value }) => {
+            parts[type] = value;
+        });
+        const hour = parts.hour === '24' ? 0 : parseInt(parts.hour, 10);
+        return {
+            year: parseInt(parts.year, 10),
+            month: parseInt(parts.month, 10),
+            day: parseInt(parts.day, 10),
+            hour: hour,
+            minute: parseInt(parts.minute, 10),
+            second: parseInt(parts.second, 10),
+            dateStr: `${parts.year}-${parts.month}-${parts.day}`
+        };
+    }
+
+    // 設定台灣時間每日 00:00 自動刷新頁面
+    function setupTaiwanMidnightAutoReload() {
+        const tp = getTaipeiTimeParts();
+        initialTaipeiDateStr = tp.dateStr;
+
+        // 計算距離台灣時間下一個 00:00:00 的剩餘毫秒數 (多加 500ms 緩衝確保已跨日)
+        const elapsedTodayMs = ((tp.hour * 3600) + (tp.minute * 60) + tp.second) * 1000 + new Date().getMilliseconds();
+        const msUntilMidnight = (24 * 60 * 60 * 1000) - elapsedTodayMs + 500;
+
+        setTimeout(function() {
+            window.location.reload();
+        }, msUntilMidnight);
+
+        // 若電腦夜間休眠、隔天喚醒頁面時，偵測台灣日期已變更也立即刷新
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                const currentTp = getTaipeiTimeParts();
+                if (initialTaipeiDateStr && currentTp.dateStr !== initialTaipeiDateStr) {
+                    window.location.reload();
+                }
+            }
+        });
+    }
 
     window.onload = function() {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
+        // 啟動台灣時間每日 00:00 自動刷新排程
+        setupTaiwanMidnightAutoReload();
+
+        // 依台灣時間取得今天與明天日期
+        const tp = getTaipeiTimeParts();
+        const taipeiToday = new Date(tp.year, tp.month - 1, tp.day);
+        const taipeiTomorrow = new Date(taipeiToday);
+        taipeiTomorrow.setDate(taipeiToday.getDate() + 1);
         
         // 康達勝通預設明天
-        const tYear = tomorrow.getFullYear();
-        const tMonth = String(tomorrow.getMonth() + 1).padStart(2, '0');
-        const tDay = String(tomorrow.getDate()).padStart(2, '0');
+        const tYear = taipeiTomorrow.getFullYear();
+        const tMonth = String(taipeiTomorrow.getMonth() + 1).padStart(2, '0');
+        const tDay = String(taipeiTomorrow.getDate()).padStart(2, '0');
         document.getElementById('arrivalDate').value = `${tYear}-${tMonth}-${tDay}`;
 
-        // 農場與自用預設瀏覽器今天
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${year}-${month}-${day}`;
-        document.getElementById('farmDate').value = todayStr;
-        document.getElementById('selfDate').value = todayStr;
+        // 農場與自用預設今天
+        document.getElementById('farmDate').value = tp.dateStr;
+        document.getElementById('selfDate').value = tp.dateStr;
 
         // 初始化選單
         initFarmSelect();
