@@ -269,6 +269,25 @@
             cursor: not-allowed;
         }
 
+        .btn-reset-default {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #b02a37;
+            background: #fff5f5;
+            border: 1px solid #f5c2c7;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-reset-default:hover {
+            background: #ffe3e3;
+            border-color: #f1aeb5;
+        }
+
         /* 右側預覽區 */
         #preview-area {
             flex-grow: 1;
@@ -800,6 +819,9 @@
             </div>
         </div>
 
+        <!-- 恢復預設農民名單按鈕 -->
+        <button type="button" class="btn-reset-default" onclick="resetMushroomFarmersToDefault()">↺ 恢復預設農民名單</button>
+
         <span class="weight-hint" style="margin-bottom: 10px;">提示：直接點擊右側預覽標籤上的農民名稱，也可快速切換反黑狀態。</span>
     </div>
 
@@ -1070,6 +1092,7 @@
     ];
 
     // 香菇貼預設農民資料 (每排5個，一般香菇最多10個、履歷香菇最多23個)
+    const MUSHROOM_STORAGE_KEY = 'greenGarden_mushroomFarmers_v6';
     const MUSHROOM_LIMITS = { general: 10, resume: 23 };
     const defaultMushroomData = {
         general: [
@@ -1108,7 +1131,7 @@
     // 載入儲存的香菇貼農民設定
     function loadMushroomState() {
         try {
-            const saved = localStorage.getItem('greenGarden_mushroomFarmers_v6');
+            const saved = localStorage.getItem(MUSHROOM_STORAGE_KEY);
             if (saved) {
                 const parsed = JSON.parse(saved);
                 if (Array.isArray(parsed.general) && Array.isArray(parsed.resume)) {
@@ -1123,8 +1146,21 @@
 
     function saveMushroomState() {
         try {
-            localStorage.setItem('greenGarden_mushroomFarmers_v6', JSON.stringify(mushroomFarmersState));
+            localStorage.setItem(MUSHROOM_STORAGE_KEY, JSON.stringify(mushroomFarmersState));
         } catch (e) {}
+    }
+
+    // 恢復香菇貼農民名單為系統預設值
+    function resetMushroomFarmersToDefault() {
+        if (!confirm('確定要清除暫存並恢復預設農民名單嗎？（目前自行新增、刪除或修改的農民名單將會還原）')) {
+            return;
+        }
+        try {
+            localStorage.removeItem(MUSHROOM_STORAGE_KEY);
+        } catch (e) {}
+        mushroomFarmersState = JSON.parse(JSON.stringify(defaultMushroomData));
+        renderMushroomControls();
+        updateContent();
     }
 
     // 取得精準台灣時間 (Asia/Taipei) 元件
