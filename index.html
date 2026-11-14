@@ -9,7 +9,7 @@
             /* 定義標籤尺寸 */
             --label-width: 87.5mm;
             --label-height: 60.7mm;
-            --sidebar-width: 350px;
+            --sidebar-width: 360px;
             
             /* 左右留邊統一為 12mm */
             --content-padding-x: 12mm;
@@ -82,7 +82,7 @@
             font-size: 0.95rem;
         }
 
-        select, input {
+        select, input[type="text"], input[type="number"], input[type="date"] {
             width: 100%;
             padding: 9px 10px;
             border: 1px solid #ced4da;
@@ -126,7 +126,7 @@
             padding: 3px 0;
         }
 
-        button {
+        button.print-btn {
             background: #3498db;
             color: white;
             border: none;
@@ -140,8 +140,133 @@
             margin-top: 10px;
         }
 
-        button:hover {
+        button.print-btn:hover {
             background: #2980b9;
+        }
+
+        /* ================= 香菇貼控制面板樣式 ================= */
+        .mushroom-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mushroom-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .mushroom-section-header span {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+
+        .mushroom-count-badge {
+            font-size: 0.82rem;
+            background: #e2e8f0;
+            color: #334155;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .mushroom-farmer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+
+        .mushroom-farmer-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            padding: 4px 6px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .mushroom-farmer-row.is-checked {
+            background: #212529;
+            border-color: #212529;
+        }
+
+        .mushroom-farmer-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: #000;
+        }
+
+        .mushroom-farmer-row input[type="text"] {
+            padding: 4px 6px;
+            font-size: 0.92rem;
+            border: 1px solid transparent;
+            background: transparent;
+            flex-grow: 1;
+        }
+
+        .mushroom-farmer-row.is-checked input[type="text"] {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .mushroom-farmer-row input[type="text"]:focus {
+            border-color: #3498db;
+            background: #fff;
+            color: #000;
+            outline: none;
+        }
+
+        .btn-del-farmer {
+            background: transparent;
+            border: none;
+            color: #dc3545;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.95rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .mushroom-farmer-row.is-checked .btn-del-farmer {
+            color: #ff8787;
+        }
+
+        .mushroom-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .btn-small:hover:not(:disabled) {
+            background: #e9ecef;
+        }
+
+        .btn-small:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* 右側預覽區 */
@@ -360,6 +485,131 @@
             line-height: 1.15;
         }
 
+        /* ================= 香菇貼模式樣式 (每排5個、12.6pt大字體填滿寬度與高度、上限23人) ================= */
+        #mushroom-layout {
+            width: 100%;
+            height: 100%;
+            padding: 1.5mm 5mm 2mm 1.5mm;
+            box-sizing: border-box;
+            display: none;
+            color: #000;
+        }
+
+        .mushroom-table {
+            width: 100%;
+            height: 100%;
+            border: 1.5px solid #000;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .mushroom-row-top {
+            height: 28%;
+            border-bottom: 1.5px solid #000;
+            display: flex;
+            box-sizing: border-box;
+        }
+
+        .mushroom-row-bottom {
+            height: 72%;
+            display: flex;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .mushroom-left-col {
+            width: 9.5mm;
+            border-right: 1.5px solid #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .mushroom-left-top {
+            font-size: 10.5pt;
+            line-height: 1.25;
+        }
+
+        .mushroom-left-bottom {
+            font-size: 11pt;
+            line-height: 1.2;
+        }
+
+        /* 每排5個緊湊填滿整排寬度，垂直行距舒展填滿下方空間 */
+        .mushroom-right-col {
+            flex-grow: 1;
+            padding: 1.2mm 0.8mm;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            column-gap: 0.45mm;
+            row-gap: 1.25mm;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .mushroom-farmer-chip {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12.6pt;
+            font-weight: bold;
+            line-height: 1.15;
+            padding: 0.2mm 0.35mm;
+            border-radius: 1.5px;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .mushroom-farmer-chip .m-box {
+            display: inline-block;
+            width: 2.4mm;
+            height: 2.4mm;
+            border: 1.1px solid #000;
+            margin-right: 0.35mm;
+            box-sizing: border-box;
+            background: #fff;
+            flex-shrink: 0;
+        }
+
+        /* 勾選反黑樣式 */
+        .mushroom-farmer-chip.checked {
+            background-color: #000;
+            color: #fff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .mushroom-farmer-chip.checked .m-box {
+            background-color: #fff;
+            border-color: #fff;
+        }
+
+        /* 日期四周完整黑框 (位於第4排右側，與第16~18位及第21~23位農民並排不重疊) */
+        .mushroom-date-box {
+            position: absolute;
+            right: 1mm;
+            bottom: 1mm;
+            width: 28mm;
+            height: 9mm;
+            border: 1.5px solid #000;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16.5pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-sizing: border-box;
+        }
+
         @media print {
             @page {
                 size: 87.5mm 60.7mm;
@@ -402,6 +652,7 @@
             <option value="kangda">康達勝通</option>
             <option value="farm">農場</option>
             <option value="self">自用</option>
+            <option value="mushroom">香菇貼</option>
         </select>
     </div>
 
@@ -515,7 +766,44 @@
         </div>
     </div>
 
-    <button onclick="window.print()">執行列印</button>
+    <!-- ================= 香菇貼控制區 ================= -->
+    <div id="mushroomControls" style="display: none;">
+        <div class="input-group">
+            <label>2. 選擇日期 (預設台灣今天)</label>
+            <input type="date" id="mushroomDate" onchange="updateContent()">
+            <span id="mushroomDateHint" class="date-display-text"></span>
+        </div>
+
+        <!-- 一般香菇農民區 (每排5個，最多2排10個) -->
+        <div class="mushroom-section">
+            <div class="mushroom-section-header">
+                <span>一般香菇農民 (每排5個，最多10個)</span>
+                <span class="mushroom-count-badge" id="generalMushroomCount">3 / 10</span>
+            </div>
+            <div class="mushroom-farmer-list" id="generalMushroomList"></div>
+            <div class="mushroom-actions">
+                <button type="button" class="btn-small" id="btnAddGeneralFarmer" onclick="addMushroomFarmer('general')">+ 新增農民</button>
+                <button type="button" class="btn-small" onclick="clearMushroomChecks('general')">取消全選</button>
+            </div>
+        </div>
+
+        <!-- 履歷香菇農民區 (每排5個，最多23個) -->
+        <div class="mushroom-section">
+            <div class="mushroom-section-header">
+                <span>履歷香菇農民 (每排5個，最多23個)</span>
+                <span class="mushroom-count-badge" id="resumeMushroomCount">18 / 23</span>
+            </div>
+            <div class="mushroom-farmer-list" id="resumeMushroomList"></div>
+            <div class="mushroom-actions">
+                <button type="button" class="btn-small" id="btnAddResumeFarmer" onclick="addMushroomFarmer('resume')">+ 新增農民</button>
+                <button type="button" class="btn-small" onclick="clearMushroomChecks('resume')">取消全選</button>
+            </div>
+        </div>
+
+        <span class="weight-hint" style="margin-bottom: 10px;">提示：直接點擊右側預覽標籤上的農民名稱，也可快速切換反黑狀態。</span>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">執行列印</button>
 </div>
 
 <div id="preview-area">
@@ -568,12 +856,37 @@
                 </div>
             </div>
 
+            <!-- ================= 香菇貼預覽版面 ================= -->
+            <div id="mushroom-layout">
+                <div class="mushroom-table">
+                    <!-- 上半部：一般香菇 -->
+                    <div class="mushroom-row-top">
+                        <div class="mushroom-left-col mushroom-left-top">
+                            <div>一般</div>
+                            <div>香菇</div>
+                        </div>
+                        <div class="mushroom-right-col" id="previewGeneralMushroom"></div>
+                    </div>
+                    <!-- 下半部：履歷香菇 + 右下角日期框 -->
+                    <div class="mushroom-row-bottom">
+                        <div class="mushroom-left-col mushroom-left-bottom">
+                            <div>履</div>
+                            <div>歷</div>
+                            <div>香</div>
+                            <div>菇</div>
+                        </div>
+                        <div class="mushroom-right-col" id="previewResumeMushroom"></div>
+                        <div class="mushroom-date-box" id="mushroomDisplayDate">11/14</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script>
-    // 康達勝通資料庫 (完全保留原資料)
+    // 康達勝通資料庫
     const itemDatabase = {
         dayuan: [
             { name: "有機特級杏鮑菇1kg", count: 20, display: "有機特級杏鮑菇1kg (20入)" },
@@ -756,9 +1069,63 @@
         "素茵"
     ];
 
+    // 香菇貼預設農民資料 (每排5個，一般香菇最多10個、履歷香菇最多23個)
+    const MUSHROOM_LIMITS = { general: 10, resume: 23 };
+    const defaultMushroomData = {
+        general: [
+            { name: "菘瑋", checked: false },
+            { name: "雅雯", checked: false },
+            { name: "奇鴻", checked: false }
+        ],
+        resume: [
+            { name: "世國", checked: false },
+            { name: "文棟", checked: false },
+            { name: "清鴻", checked: false },
+            { name: "烱治", checked: false },
+            { name: "烱淮", checked: false },
+            { name: "世章", checked: false },
+            { name: "民陽", checked: false },
+            { name: "煜翔", checked: false },
+            { name: "原福", checked: false },
+            { name: "俊諺", checked: false },
+            { name: "宏勝", checked: false },
+            { name: "榮楷", checked: false },
+            { name: "承暉", checked: false },
+            { name: "君孝", checked: false },
+            { name: "立宏", checked: false },
+            { name: "承宗", checked: false },
+            { name: "晉豪", checked: false },
+            { name: "秀娟", checked: false }
+        ]
+    };
+
+    let mushroomFarmersState = JSON.parse(JSON.stringify(defaultMushroomData));
+
     let currentDefaultCount = null;
     let currentDefaultName = null;
     let initialTaipeiDateStr = null;
+
+    // 載入儲存的香菇貼農民設定
+    function loadMushroomState() {
+        try {
+            const saved = localStorage.getItem('greenGarden_mushroomFarmers_v6');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed.general) && Array.isArray(parsed.resume)) {
+                    mushroomFarmersState = {
+                        general: parsed.general.slice(0, MUSHROOM_LIMITS.general),
+                        resume: parsed.resume.slice(0, MUSHROOM_LIMITS.resume)
+                    };
+                }
+            }
+        } catch (e) {}
+    }
+
+    function saveMushroomState() {
+        try {
+            localStorage.setItem('greenGarden_mushroomFarmers_v6', JSON.stringify(mushroomFarmersState));
+        } catch (e) {}
+    }
 
     // 取得精準台灣時間 (Asia/Taipei) 元件
     function getTaipeiTimeParts() {
@@ -794,7 +1161,6 @@
         const tp = getTaipeiTimeParts();
         initialTaipeiDateStr = tp.dateStr;
 
-        // 計算距離台灣時間下一個 00:00:00 的剩餘毫秒數 (多加 500ms 緩衝確保已跨日)
         const elapsedTodayMs = ((tp.hour * 3600) + (tp.minute * 60) + tp.second) * 1000 + new Date().getMilliseconds();
         const msUntilMidnight = (24 * 60 * 60 * 1000) - elapsedTodayMs + 500;
 
@@ -802,7 +1168,6 @@
             window.location.reload();
         }, msUntilMidnight);
 
-        // 若電腦夜間休眠、隔天喚醒頁面時，偵測台灣日期已變更也立即刷新
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'visible') {
                 const currentTp = getTaipeiTimeParts();
@@ -816,6 +1181,7 @@
     window.onload = function() {
         // 啟動台灣時間每日 00:00 自動刷新排程
         setupTaiwanMidnightAutoReload();
+        loadMushroomState();
 
         // 依台灣時間取得今天與明天日期
         const tp = getTaipeiTimeParts();
@@ -829,36 +1195,32 @@
         const tDay = String(taipeiTomorrow.getDate()).padStart(2, '0');
         document.getElementById('arrivalDate').value = `${tYear}-${tMonth}-${tDay}`;
 
-        // 農場與自用預設今天
+        // 農場、自用、香菇貼預設今天
         document.getElementById('farmDate').value = tp.dateStr;
         document.getElementById('selfDate').value = tp.dateStr;
+        document.getElementById('mushroomDate').value = tp.dateStr;
 
-        // 初始化選單
+        // 初始化選單與資料
         initFarmSelect();
         initSelfSelect();
+        renderMushroomControls();
         updateItemOptions();
         updateFarmOptions();
         switchMainCategory();
     };
 
-    // 切換頂層大分類 (康達勝通 vs 農場 vs 自用)
+    // 切換頂層大分類
     function switchMainCategory() {
         const category = document.getElementById('mainCategorySelect').value;
-        const kangdaControls = document.getElementById('kangdaControls');
-        const farmControls = document.getElementById('farmControls');
-        const selfControls = document.getElementById('selfControls');
+        document.getElementById('kangdaControls').style.display = (category === 'kangda') ? 'block' : 'none';
+        document.getElementById('farmControls').style.display = (category === 'farm') ? 'block' : 'none';
+        document.getElementById('selfControls').style.display = (category === 'self') ? 'block' : 'none';
+        document.getElementById('mushroomControls').style.display = (category === 'mushroom') ? 'block' : 'none';
 
-        const kangdaLayout = document.getElementById('kangda-layout');
-        const farmLayout = document.getElementById('farm-layout');
-        const selfLayout = document.getElementById('self-layout');
-
-        kangdaControls.style.display = (category === 'kangda') ? 'block' : 'none';
-        farmControls.style.display = (category === 'farm') ? 'block' : 'none';
-        selfControls.style.display = (category === 'self') ? 'block' : 'none';
-
-        kangdaLayout.style.display = (category === 'kangda') ? 'block' : 'none';
-        farmLayout.style.display = (category === 'farm') ? 'flex' : 'none';
-        selfLayout.style.display = (category === 'self') ? 'flex' : 'none';
+        document.getElementById('kangda-layout').style.display = (category === 'kangda') ? 'block' : 'none';
+        document.getElementById('farm-layout').style.display = (category === 'farm') ? 'flex' : 'none';
+        document.getElementById('self-layout').style.display = (category === 'self') ? 'flex' : 'none';
+        document.getElementById('mushroom-layout').style.display = (category === 'mushroom') ? 'block' : 'none';
 
         updateContent();
     }
@@ -947,7 +1309,6 @@
                 opt.textContent = `${item.name}${weightLabel}`;
                 farmItemSelect.appendChild(opt);
             });
-            // 預設帶入第一項品名與對應重量
             farmItemSelect.value = "0";
             const firstItem = farmData.items[0];
             inputFarmItem.value = firstItem.name;
@@ -986,7 +1347,6 @@
             opt.textContent = item;
             selfItemSelect.appendChild(opt);
         });
-        // 預設選取第一項
         if (selfItemsDatabase.length > 0) {
             selfItemSelect.value = selfItemsDatabase[0];
             document.getElementById('inputSelfItem').value = selfItemsDatabase[0];
@@ -997,6 +1357,116 @@
         const val = document.getElementById('selfItemSelect').value;
         document.getElementById('inputSelfItem').value = val;
         updateContent();
+    }
+
+    // ================= 香菇貼邏輯 =================
+    function renderMushroomControls() {
+        ['general', 'resume'].forEach(type => {
+            const listEl = document.getElementById(`${type}MushroomList`);
+            const countEl = document.getElementById(`${type}MushroomCount`);
+            const addBtn = document.getElementById(type === 'general' ? 'btnAddGeneralFarmer' : 'btnAddResumeFarmer');
+            const items = mushroomFarmersState[type];
+            const limit = MUSHROOM_LIMITS[type];
+
+            countEl.textContent = `${items.length} / ${limit}`;
+            addBtn.disabled = items.length >= limit;
+
+            listEl.innerHTML = '';
+            items.forEach((farmer, idx) => {
+                const row = document.createElement('div');
+                row.className = 'mushroom-farmer-row' + (farmer.checked ? ' is-checked' : '');
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = farmer.checked;
+                cb.onchange = () => toggleMushroomFarmer(type, idx);
+
+                const txt = document.createElement('input');
+                txt.type = 'text';
+                txt.value = farmer.name;
+                txt.placeholder = '輸入農民名稱';
+                txt.oninput = (e) => updateMushroomFarmerName(type, idx, e.target.value);
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'btn-del-farmer';
+                delBtn.textContent = '✕';
+                delBtn.title = '刪除此農民';
+                delBtn.onclick = () => removeMushroomFarmer(type, idx);
+
+                row.appendChild(cb);
+                row.appendChild(txt);
+                row.appendChild(delBtn);
+                listEl.appendChild(row);
+            });
+        });
+    }
+
+    function toggleMushroomFarmer(type, idx) {
+        if (mushroomFarmersState[type][idx]) {
+            mushroomFarmersState[type][idx].checked = !mushroomFarmersState[type][idx].checked;
+            saveMushroomState();
+            renderMushroomControls();
+            updateContent();
+        }
+    }
+
+    function updateMushroomFarmerName(type, idx, newName) {
+        if (mushroomFarmersState[type][idx]) {
+            mushroomFarmersState[type][idx].name = newName;
+            saveMushroomState();
+            updateContent();
+        }
+    }
+
+    function addMushroomFarmer(type) {
+        if (mushroomFarmersState[type].length >= MUSHROOM_LIMITS[type]) return;
+        mushroomFarmersState[type].push({ name: "新農民", checked: false });
+        saveMushroomState();
+        renderMushroomControls();
+        updateContent();
+    }
+
+    function removeMushroomFarmer(type, idx) {
+        mushroomFarmersState[type].splice(idx, 1);
+        saveMushroomState();
+        renderMushroomControls();
+        updateContent();
+    }
+
+    function clearMushroomChecks(type) {
+        mushroomFarmersState[type].forEach(f => f.checked = false);
+        saveMushroomState();
+        renderMushroomControls();
+        updateContent();
+    }
+
+    function renderMushroomPreview() {
+        ['general', 'resume'].forEach(type => {
+            const container = document.getElementById(type === 'general' ? 'previewGeneralMushroom' : 'previewResumeMushroom');
+            const items = mushroomFarmersState[type];
+            container.innerHTML = '';
+
+            // 12.6pt 大字體，每排 5 個緊湊填滿整排寬度與高度
+            const fontSizePt = 12.6;
+
+            items.forEach((farmer, idx) => {
+                const chip = document.createElement('span');
+                chip.className = 'mushroom-farmer-chip' + (farmer.checked ? ' checked' : '');
+                chip.style.fontSize = fontSizePt + 'pt';
+                chip.title = '點擊切換勾選反黑';
+                chip.onclick = () => toggleMushroomFarmer(type, idx);
+
+                const box = document.createElement('span');
+                box.className = 'm-box';
+
+                const labelText = document.createTextNode(farmer.name || ' ');
+
+                chip.appendChild(box);
+                chip.appendChild(labelText);
+                container.appendChild(chip);
+            });
+        });
     }
 
     // ================= 畫面更新總控 =================
@@ -1021,7 +1491,6 @@
             const storeBox = document.getElementById('storeBox');
             const storeNameDisplay = document.getElementById('storeNameDisplay');
             
-            // 樣式檢測 (是否修改過預設值)
             const nameInputEl = document.getElementById('inputName');
             if (currentDefaultName !== null && nameInput !== currentDefaultName) {
                 nameInputEl.classList.add('is-modified');
@@ -1036,7 +1505,6 @@
                 countInputEl.classList.remove('is-modified');
             }
 
-            // 太陽日計算
             if (dateVal) {
                 const parts = dateVal.split('-');
                 const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -1052,7 +1520,6 @@
                 solarDayDiv.style.visibility = 'hidden';
             }
 
-            // 底部元件動態顯示
             miaTag.style.display = (warehouse === 'mia') ? 'flex' : 'none';
             giftBox.style.display = isGift ? 'flex' : 'none';
 
@@ -1063,7 +1530,6 @@
                 storeBox.style.display = 'none';
             }
 
-            // 品名自動縮放與置中
             nameSpan.innerText = nameInput || "";
             nameSpan.style.fontSize = "24pt"; 
             const maxWidth = nameContainer.offsetWidth;
@@ -1076,7 +1542,6 @@
             document.getElementById('displayCount').innerText = countInputVal ? countInputVal + " 入" : "";
 
         } else if (category === 'farm') {
-            // 農場模式畫面更新
             const farmName = document.getElementById('inputFarmName').value.trim();
             const farmItem = document.getElementById('inputFarmItem').value;
             const farmWeightVal = document.getElementById('inputFarmWeightVal').value.trim();
@@ -1091,7 +1556,6 @@
             const farmDisplayName = document.getElementById('farmDisplayName');
             const farmBottomRow = document.getElementById('farmBottomRow');
 
-            // 日期格式化 (MM/DD)
             if (farmDateVal) {
                 const parts = farmDateVal.split('-');
                 const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -1105,7 +1569,6 @@
                 farmDisplayDate.innerText = "";
             }
 
-            // 品項名稱基準 36pt，超過 12mm 安全邊界自動縮小
             farmDisplayItem.innerText = farmItem || "";
             farmDisplayItem.style.fontSize = "36pt";
             const maxFarmWidth = farmItemContainer.offsetWidth;
@@ -1115,7 +1578,6 @@
                 farmDisplayItem.style.fontSize = farmFontSize + "pt";
             }
 
-            // 重量 22pt、農場名稱 17pt (超過 12mm 安全邊界時維持比例縮小)
             farmDisplayWeight.innerText = farmWeightVal ? `${farmWeightVal}${farmWeightUnit}` : "";
             farmDisplayName.innerText = farmName || "";
 
@@ -1131,8 +1593,7 @@
                 farmDisplayName.style.fontSize = nameFontSize + "pt";
             }
 
-        } else {
-            // 自用模式畫面更新
+        } else if (category === 'self') {
             const selfItem = document.getElementById('inputSelfItem').value;
             const selfDateVal = document.getElementById('selfDate').value;
 
@@ -1141,7 +1602,6 @@
             const selfDisplayItem = document.getElementById('selfDisplayItem');
             const selfItemContainer = document.getElementById('selfItemContainer');
 
-            // 日期格式化 (MM/DD)
             if (selfDateVal) {
                 const parts = selfDateVal.split('-');
                 const d = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -1155,7 +1615,6 @@
                 selfDisplayDate.innerText = "";
             }
 
-            // 中間大字基準 36pt，超過左右 12mm 安全邊界自動縮小
             selfDisplayItem.innerText = selfItem || "";
             selfDisplayItem.style.fontSize = "36pt";
             const maxSelfWidth = selfItemContainer.offsetWidth;
@@ -1164,6 +1623,27 @@
                 selfFontSize -= 0.5;
                 selfDisplayItem.style.fontSize = selfFontSize + "pt";
             }
+
+        } else {
+            // 香菇貼模式畫面更新
+            const mushroomDateVal = document.getElementById('mushroomDate').value;
+            const mushroomDateHint = document.getElementById('mushroomDateHint');
+            const mushroomDisplayDate = document.getElementById('mushroomDisplayDate');
+
+            if (mushroomDateVal) {
+                const parts = mushroomDateVal.split('-');
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                mushroomDateHint.innerText = `${y}/${m}/${day} (${weekDays[d.getDay()]})`;
+                mushroomDisplayDate.innerText = `${m}/${day}`;
+            } else {
+                mushroomDateHint.innerText = "";
+                mushroomDisplayDate.innerText = "";
+            }
+
+            renderMushroomPreview();
         }
     }
 
