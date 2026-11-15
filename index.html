@@ -529,7 +529,7 @@
         }
 
         #farmDisplayItem {
-            font-size: 36pt;
+            font-size: 56pt;
             font-weight: bold;
             white-space: nowrap;
             line-height: 1.12;
@@ -547,7 +547,7 @@
         }
 
         #farmDisplayWeight {
-            font-size: 22pt;
+            font-size: 34pt;
             font-weight: bold;
             white-space: nowrap;
             flex-shrink: 0;
@@ -555,7 +555,7 @@
         }
 
         #farmDisplayName {
-            font-size: 17pt;
+            font-size: 26pt;
             font-weight: bold;
             white-space: nowrap;
             text-align: right;
@@ -596,7 +596,7 @@
         }
 
         #selfDisplayItem {
-            font-size: 36pt;
+            font-size: 64pt;
             font-weight: bold;
             white-space: nowrap;
             line-height: 1.12;
@@ -850,41 +850,42 @@
                     <option value="台斤">台斤</option>
                     <option value="kg">kg</option>
                     <option value="把">把</option>
+                    <option value="盒">盒</option>
                     <option value="">(無單位)</option>
                 </select>
             </div>
             <span class="weight-hint">可直接修改數字或單位，留白則標籤不顯示重量</span>
         </div>
 
-        <!-- 農場字體大小調整區 -->
+        <!-- 農場字體大小調整區 (預設最大並自動鎖定安全邊界) -->
         <div class="font-control-box">
             <div class="font-control-title">
-                <span>字體大小調整 (自動防超出邊界)</span>
+                <span>字體大小調整 (預設最大，自動防超出)</span>
             </div>
 
             <div class="font-slider-item">
                 <div class="font-slider-header">
                     <span>品項字體 (pt)</span>
-                    <span class="font-actual-badge" id="farmItemActualBadge">實際: 36pt</span>
+                    <span class="font-actual-badge" id="farmItemActualBadge">實際: 56pt</span>
                 </div>
                 <div class="font-slider-row">
-                    <input type="range" id="farmItemFontRange" min="14" max="56" step="0.5" value="36" oninput="syncFontInput('farmItem', 'range')">
-                    <input type="number" id="farmItemFontNum" min="14" max="56" step="0.5" value="36" oninput="syncFontInput('farmItem', 'num')">
+                    <input type="range" id="farmItemFontRange" min="14" max="56" step="0.5" value="56" oninput="syncFontInput('farmItem', 'range')">
+                    <input type="number" id="farmItemFontNum" min="14" max="56" step="0.5" value="56" oninput="syncFontInput('farmItem', 'num')">
                 </div>
             </div>
 
             <div class="font-slider-item">
                 <div class="font-slider-header">
                     <span>重量 / 農場名 (pt)</span>
-                    <span class="font-actual-badge" id="farmBottomActualBadge">實際: 22 / 17pt</span>
+                    <span class="font-actual-badge" id="farmBottomActualBadge">實際: 34 / 26.3pt</span>
                 </div>
                 <div class="font-slider-row">
-                    <input type="range" id="farmBottomFontRange" min="10" max="34" step="0.5" value="22" oninput="syncFontInput('farmBottom', 'range')">
-                    <input type="number" id="farmBottomFontNum" min="10" max="34" step="0.5" value="22" oninput="syncFontInput('farmBottom', 'num')">
+                    <input type="range" id="farmBottomFontRange" min="10" max="34" step="0.5" value="34" oninput="syncFontInput('farmBottom', 'range')">
+                    <input type="number" id="farmBottomFontNum" min="10" max="34" step="0.5" value="34" oninput="syncFontInput('farmBottom', 'num')">
                 </div>
             </div>
 
-            <button type="button" class="btn-reset-font" onclick="resetFarmFontSizes()">↺ 恢復預設字體大小</button>
+            <button type="button" class="btn-reset-font" onclick="resetFarmFontSizes()">↺ 恢復預設字體大小 (最大)</button>
         </div>
 
         <div class="input-group">
@@ -907,24 +908,24 @@
             <input type="text" id="inputSelfItem" placeholder="請輸入顯示文字" oninput="updateContent()">
         </div>
 
-        <!-- 自用字體大小調整區 -->
+        <!-- 自用字體大小調整區 (預設最大並自動鎖定安全邊界) -->
         <div class="font-control-box">
             <div class="font-control-title">
-                <span>字體大小調整 (自動防超出邊界)</span>
+                <span>字體大小調整 (預設最大，自動防超出)</span>
             </div>
 
             <div class="font-slider-item">
                 <div class="font-slider-header">
                     <span>顯示文字大小 (pt)</span>
-                    <span class="font-actual-badge" id="selfItemActualBadge">實際: 36pt</span>
+                    <span class="font-actual-badge" id="selfItemActualBadge">實際: 64pt</span>
                 </div>
                 <div class="font-slider-row">
-                    <input type="range" id="selfItemFontRange" min="14" max="64" step="0.5" value="36" oninput="syncFontInput('selfItem', 'range')">
-                    <input type="number" id="selfItemFontNum" min="14" max="64" step="0.5" value="36" oninput="syncFontInput('selfItem', 'num')">
+                    <input type="range" id="selfItemFontRange" min="14" max="64" step="0.5" value="64" oninput="syncFontInput('selfItem', 'range')">
+                    <input type="number" id="selfItemFontNum" min="14" max="64" step="0.5" value="64" oninput="syncFontInput('selfItem', 'num')">
                 </div>
             </div>
 
-            <button type="button" class="btn-reset-font" onclick="resetSelfFontSize()">↺ 恢復預設字體大小</button>
+            <button type="button" class="btn-reset-font" onclick="resetSelfFontSize()">↺ 恢復預設字體大小 (最大)</button>
         </div>
 
         <div class="input-group">
@@ -1115,16 +1116,16 @@
             label: "櫛瓜：林承翰",
             name: "林承翰",
             items: [
-                { name: "履歷櫛瓜M", weightVal: "10", weightUnit: "台斤" },
-                { name: "履歷櫛瓜S", weightVal: "10", weightUnit: "台斤" },
-                { name: "履歷櫛瓜B", weightVal: "10", weightUnit: "台斤" }
+                { name: "履歷櫛瓜M", weightVal: "10", weightUnit: "kg" },
+                { name: "履歷櫛瓜S", weightVal: "10", weightUnit: "kg" },
+                { name: "履歷櫛瓜B", weightVal: "10", weightUnit: "kg" }
             ]
         },
         xu_shengfa: {
             label: "櫛瓜：許勝發",
             name: "許勝發",
             items: [
-                { name: "履歷櫛瓜", weightVal: "10", weightUnit: "台斤" }
+                { name: "履歷櫛瓜", weightVal: "10", weightUnit: "kg" }
             ]
         },
         kebulan: {
@@ -1165,7 +1166,17 @@
                 { name: "青蔥3kg", weightVal: "7", weightUnit: "把" },
                 { name: "青蔥3kg", weightVal: "8", weightUnit: "把" },
                 { name: "青蔥3kg", weightVal: "9", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "10", weightUnit: "把" }
+                { name: "青蔥3kg", weightVal: "10", weightUnit: "把" },
+                { name: "小番茄", weightVal: "10", weightUnit: "kg" },
+                { name: "小番茄", weightVal: "12", weightUnit: "kg" }
+            ]
+        },
+        zhang_wenfu: {
+            label: "玉米筍：張文福",
+            name: "張文福",
+            items: [
+                { name: "玉米筍(盒裝)", weightVal: "50", weightUnit: "盒" },
+                { name: "玉米筍(盒裝)", weightVal: "100", weightUnit: "盒" }
             ]
         },
         chen_yuyang: {
@@ -1296,19 +1307,19 @@
         updateContent();
     }
 
-    // 恢復農場預設字體大小
+    // 恢復農場預設字體大小 (預設最大)
     function resetFarmFontSizes() {
-        document.getElementById('farmItemFontRange').value = 36;
-        document.getElementById('farmItemFontNum').value = 36;
-        document.getElementById('farmBottomFontRange').value = 22;
-        document.getElementById('farmBottomFontNum').value = 22;
+        document.getElementById('farmItemFontRange').value = 56;
+        document.getElementById('farmItemFontNum').value = 56;
+        document.getElementById('farmBottomFontRange').value = 34;
+        document.getElementById('farmBottomFontNum').value = 34;
         updateContent();
     }
 
-    // 恢復自用預設字體大小
+    // 恢復自用預設字體大小 (預設最大)
     function resetSelfFontSize() {
-        document.getElementById('selfItemFontRange').value = 36;
-        document.getElementById('selfItemFontNum').value = 36;
+        document.getElementById('selfItemFontRange').value = 64;
+        document.getElementById('selfItemFontNum').value = 64;
         updateContent();
     }
 
@@ -1790,7 +1801,7 @@
             }
 
             // 1. 農場底部列 (重量 + 農場名) 字體計算，保證不超出左右/上下列印邊界
-            const desiredWeightFont = parseFloat(document.getElementById('farmBottomFontRange').value) || 22;
+            const desiredWeightFont = parseFloat(document.getElementById('farmBottomFontRange').value) || 34;
             const ratio = desiredWeightFont / 22;
             let weightFontSize = desiredWeightFont;
             let nameFontSize = Math.round(17 * ratio * 10) / 10;
@@ -1822,7 +1833,7 @@
             }
 
             // 2. 農場品項字體計算，保證不超出左右留白與上下列印邊界
-            const desiredFarmItemFont = parseFloat(document.getElementById('farmItemFontRange').value) || 36;
+            const desiredFarmItemFont = parseFloat(document.getElementById('farmItemFontRange').value) || 56;
             let farmFontSize = desiredFarmItemFont;
             farmDisplayItem.innerText = farmItem || "";
             farmDisplayItem.style.fontSize = farmFontSize + "pt";
@@ -1869,7 +1880,7 @@
             }
 
             // 自用顯示文字字體計算，保證不超出左右留白與上下列印邊界
-            const desiredSelfFont = parseFloat(document.getElementById('selfItemFontRange').value) || 36;
+            const desiredSelfFont = parseFloat(document.getElementById('selfItemFontRange').value) || 64;
             let selfFontSize = desiredSelfFont;
             selfDisplayItem.innerText = selfItem || "";
             selfDisplayItem.style.fontSize = selfFontSize + "pt";
