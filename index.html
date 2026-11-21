@@ -821,7 +821,7 @@
     <!-- ================= 農場控制區 ================= -->
     <div id="farmControls" style="display: none;">
         <div class="input-group">
-            <label>2. 選擇農場 (產品：農民)</label>
+            <label>2. 選擇農場 (無前綴優先，同產品排一起)</label>
             <select id="farmSelect" onchange="updateFarmOptions()">
             </select>
         </div>
@@ -851,6 +851,8 @@
                     <option value="kg">kg</option>
                     <option value="把">把</option>
                     <option value="盒">盒</option>
+                    <option value="包">包</option>
+                    <option value="入/件">入/件</option>
                     <option value="">(無單位)</option>
                 </select>
             </div>
@@ -1098,8 +1100,9 @@
         others: []
     };
 
-    // 農場資料庫
+    // 農場資料庫 (依「無前綴產品排一起 → 同前綴產品排一起」順序整理)
     const farmDatabase = {
+        // --- 1. 前面沒有掛產品名稱 ---
         fuli: {
             label: "福利蔥蒜號",
             name: "福利蔥蒜號",
@@ -1110,22 +1113,6 @@
                 { name: "生鮮蒜仁(大仁)", weightVal: "40", weightUnit: "台斤" },
                 { name: "特價品生鮮蒜仁", weightVal: "20", weightUnit: "台斤" },
                 { name: "特價品生鮮蒜仁", weightVal: "40", weightUnit: "台斤" }
-            ]
-        },
-        lin_chenghan: {
-            label: "櫛瓜：林承翰",
-            name: "林承翰",
-            items: [
-                { name: "履歷櫛瓜M", weightVal: "10", weightUnit: "kg" },
-                { name: "履歷櫛瓜S", weightVal: "10", weightUnit: "kg" },
-                { name: "履歷櫛瓜B", weightVal: "10", weightUnit: "kg" }
-            ]
-        },
-        xu_shengfa: {
-            label: "櫛瓜：許勝發",
-            name: "許勝發",
-            items: [
-                { name: "履歷櫛瓜", weightVal: "10", weightUnit: "kg" }
             ]
         },
         kebulan: {
@@ -1142,64 +1129,16 @@
                 { name: "小黃瓜C", weightVal: "20", weightUnit: "台斤" }
             ]
         },
-        heti: {
-            label: "年均價：大大",
-            name: "大大",
+        shiyou_farm: {
+            label: "世祐農場",
+            name: "世祐農場",
             items: [
-                { name: "年均價杏B", weightVal: "", weightUnit: "" },
-                { name: "年均價杏C", weightVal: "", weightUnit: "" }
+                { name: "娃娃菜", weightVal: "30", weightUnit: "包" },
+                { name: "本產蘿美", weightVal: "12", weightUnit: "入/件" }
             ]
         },
-        zimao: {
-            label: "青蔥：子茂",
-            name: "子茂",
-            items: [
-                { name: "青蔥1kg", weightVal: "15", weightUnit: "把" }
-            ]
-        },
-        shangjing: {
-            label: "青蔥：尚景",
-            name: "尚景",
-            items: [
-                { name: "青蔥3kg", weightVal: "5", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "6", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "7", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "8", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "9", weightUnit: "把" },
-                { name: "青蔥3kg", weightVal: "10", weightUnit: "把" },
-                { name: "小番茄", weightVal: "10", weightUnit: "kg" },
-                { name: "小番茄", weightVal: "12", weightUnit: "kg" }
-            ]
-        },
-        zhang_wenfu: {
-            label: "玉米筍：張文福",
-            name: "張文福",
-            items: [
-                { name: "玉米筍(盒裝)", weightVal: "50", weightUnit: "盒" },
-                { name: "玉米筍(盒裝)", weightVal: "100", weightUnit: "盒" }
-            ]
-        },
-        chen_yuyang: {
-            label: "生菜：陳禹仰",
-            name: "陳禹仰",
-            items: [
-                { name: "羽衣甘藍", weightVal: "5", weightUnit: "kg" }
-            ]
-        },
-        cai_junwen: {
-            label: "生菜：蔡俊文",
-            name: "蔡俊文",
-            items: [
-                { name: "巴西里［捲葉］", weightVal: "15", weightUnit: "kg" }
-            ]
-        },
-        zhuo_yongjia: {
-            label: "生菜：卓永加",
-            name: "卓永加",
-            items: [
-                { name: "奶油生菜［水耕］", weightVal: "10", weightUnit: "kg" }
-            ]
-        },
+
+        // --- 2. 木耳類 ---
         yanting: {
             label: "木耳：彥廷",
             name: "彥廷",
@@ -1228,6 +1167,100 @@
                 { name: "木耳(小)", weightVal: "30", weightUnit: "台斤" }
             ]
         },
+        xiezhan: {
+            label: "木耳：協展",
+            name: "協展",
+            items: [
+                { name: "木耳(大)", weightVal: "30", weightUnit: "台斤" },
+                { name: "木耳(小)", weightVal: "30", weightUnit: "台斤" }
+            ]
+        },
+
+        // --- 3. 青蔥類 ---
+        zimao: {
+            label: "青蔥：子茂",
+            name: "子茂",
+            items: [
+                { name: "青蔥1kg", weightVal: "15", weightUnit: "把" }
+            ]
+        },
+        shangjing: {
+            label: "青蔥：尚景",
+            name: "尚景",
+            items: [
+                { name: "青蔥3kg", weightVal: "5", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "6", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "7", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "8", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "9", weightUnit: "把" },
+                { name: "青蔥3kg", weightVal: "10", weightUnit: "把" },
+                { name: "小番茄", weightVal: "10", weightUnit: "kg" },
+                { name: "小番茄", weightVal: "12", weightUnit: "kg" }
+            ]
+        },
+
+        // --- 4. 生菜類 ---
+        chen_yuyang: {
+            label: "生菜：陳禹仰",
+            name: "陳禹仰",
+            items: [
+                { name: "羽衣甘藍", weightVal: "5", weightUnit: "kg" }
+            ]
+        },
+        cai_junwen: {
+            label: "生菜：蔡俊文",
+            name: "蔡俊文",
+            items: [
+                { name: "巴西里［捲葉］", weightVal: "15", weightUnit: "kg" }
+            ]
+        },
+        zhuo_yongjia: {
+            label: "生菜：卓永加",
+            name: "卓永加",
+            items: [
+                { name: "奶油生菜［水耕］", weightVal: "10", weightUnit: "kg" }
+            ]
+        },
+
+        // --- 5. 櫛瓜類 ---
+        lin_chenghan: {
+            label: "櫛瓜：林承翰",
+            name: "林承翰",
+            items: [
+                { name: "履歷櫛瓜M", weightVal: "10", weightUnit: "kg" },
+                { name: "履歷櫛瓜S", weightVal: "10", weightUnit: "kg" },
+                { name: "履歷櫛瓜B", weightVal: "10", weightUnit: "kg" }
+            ]
+        },
+        xu_shengfa: {
+            label: "櫛瓜：許勝發",
+            name: "許勝發",
+            items: [
+                { name: "履歷櫛瓜", weightVal: "10", weightUnit: "kg" }
+            ]
+        },
+
+        // --- 6. 玉米筍類 ---
+        zhang_wenfu: {
+            label: "玉米筍：張文福",
+            name: "張文福",
+            items: [
+                { name: "玉米筍(盒裝)", weightVal: "50", weightUnit: "盒" },
+                { name: "玉米筍(盒裝)", weightVal: "100", weightUnit: "盒" }
+            ]
+        },
+
+        // --- 7. 年均價類 ---
+        heti: {
+            label: "年均價：大大",
+            name: "大大",
+            items: [
+                { name: "年均價杏B", weightVal: "", weightUnit: "" },
+                { name: "年均價杏C", weightVal: "", weightUnit: "" }
+            ]
+        },
+
+        // --- 8. 手動輸入 ---
         other_farm: {
             label: "-- 手動輸入其他農場 --",
             name: "",
